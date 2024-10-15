@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './utils/errorHandler.js';
 import prisma from './prismaClient.js';
 import authRoutes  from './routes/auth.route.js';
+import yearRoutes from './routes/year.route.js'
 
 
 dotenv.config();
@@ -16,6 +17,8 @@ app.use(cookieParser());
 
 //Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/year',  yearRoutes);
+
 
 // Base route
 app.get('/', (req, res) => res.send('Hello sean!'));

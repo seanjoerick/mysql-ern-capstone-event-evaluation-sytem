@@ -79,7 +79,6 @@ model YearLevelType {
 model Strand {
   strand_id     Int      @id @default(autoincrement())
   strand_name   String
-  year_level_id Int?
 
   @@map("tbl_strand")
 }
@@ -87,7 +86,6 @@ model Strand {
 model Course {
   course_id     Int      @id @default(autoincrement())
   course_name   String
-  year_level_id Int?
 
   @@map("tbl_courses")
 }
@@ -95,7 +93,6 @@ model Course {
 model TesdaCourse {
   tesda_course_id Int    @id @default(autoincrement())
   course_name     String
-  year_level_id   Int?
 
   @@map("tbl_tesda_courses")
 }
