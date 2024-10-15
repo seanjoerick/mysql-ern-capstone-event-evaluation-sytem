@@ -3,23 +3,18 @@ import prisma from '../prismaClient.js';
 export const createYearLevel = async (req, res, next) => {
     const { yearlevelType } = req.body;
 
-    // Validate input
-    if (!yearlevelType) {
-        return res.status(400).json({ error: 'Year level type is required!' });
-    }
+    if (!yearlevelType) return res.status(400).json({ error: 'Year level type is required!' });
+    
 
     try {
-        // Check if the year level type already exists
         const existingYearlevelType = await prisma.yearLevelType.findFirst({
             where: {
                 year_level_type: yearlevelType,
             },
         });
 
-        // If it exists, return an error
-        if (existingYearlevelType) {
-            return res.status(400).json({ error: 'Year level already exists!' });
-        }
+        if (existingYearlevelType) return res.status(400).json({ error: 'Year level already exists!' });
+        
 
         // Create a new year level
         const newYearLevel = await prisma.yearLevelType.create({

@@ -5,6 +5,7 @@ import { errorHandler } from './utils/errorHandler.js';
 import prisma from './prismaClient.js';
 import authRoutes  from './routes/auth.route.js';
 import yearRoutes from './routes/year.route.js'
+import courseRoutes from './routes/course.route.js'
 
 
 dotenv.config();
@@ -18,6 +19,8 @@ app.use(cookieParser());
 //Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/year',  yearRoutes);
+app.use('/api/course',  courseRoutes);
+
 
 
 // Base route
