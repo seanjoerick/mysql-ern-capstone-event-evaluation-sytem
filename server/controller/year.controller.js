@@ -91,3 +91,18 @@ export const updateyearLevel = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getAllYearLevels = async (req, res, next) => {
+    try {
+        const yearLevels = await prisma.yearLevelType.findMany();
+        if (yearLevels.length === 0) return res.status(404).json({ message: 'No year levels found.' });
+
+        res.status(200).json({
+            message: 'Year levels retrieved successfully',
+            yearLevels,
+        });
+    } catch (error) {
+        console.error('Error retrieving year levels:', error);
+        next(error);
+    }
+};
