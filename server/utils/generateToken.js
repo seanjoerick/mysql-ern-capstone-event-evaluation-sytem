@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-const generateTokenAndSetCookie = (userId, res) => {
+const generateTokenAndSetCookie = (userId, role, res) => {
     try {
-        const token = jwt.sign({ userId }, process.env.JWT, {
-            expiresIn: '15d', // Token expiration time
+        const token = jwt.sign({ userId, role }, process.env.JWT_SECRET, {
+            expiresIn: '15d',
         });
 
         // Set cookie with the generated token
@@ -11,7 +11,7 @@ const generateTokenAndSetCookie = (userId, res) => {
             maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days in milliseconds
             httpOnly: true, // Prevent XSS attacks
             sameSite: 'strict', // Prevent CSRF attacks
-            secure: process.env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
+            secure: process.env.NODE_ENV === 'production',
         });
     } catch (error) {
         console.error('Error generating token:', error);

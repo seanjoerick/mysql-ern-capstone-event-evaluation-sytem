@@ -6,7 +6,7 @@ import prisma from './prismaClient.js';
 import authRoutes  from './routes/auth.route.js';
 import yearRoutes from './routes/year.route.js'
 import courseRoutes from './routes/course.route.js'
-
+import userRoutes from './routes/user.route.js'
 
 dotenv.config();
 const app = express();
@@ -18,8 +18,10 @@ app.use(cookieParser());
 
 //Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/year',  yearRoutes);
-app.use('/api/course',  courseRoutes);
+app.use('/api/year', yearRoutes);
+app.use('/api/course', courseRoutes);
+app.use('/api/user', userRoutes);
+
 
 
 

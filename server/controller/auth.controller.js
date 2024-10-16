@@ -17,10 +17,8 @@ export const signup = async (req, res, next) => {
           }
       });
 
-      if (existingUser) {
-          return res.status(400).json({ error: 'User already exists!' });
-      }
-
+      if (existingUser) return res.status(400).json({ error: 'User already exists!' });
+      
       // Hash the password
       const salt = bcryptjs.genSaltSync(10);
       const hashedPassword = bcryptjs.hashSync(password, salt);
@@ -49,7 +47,7 @@ export const signup = async (req, res, next) => {
       });
 
       // Generate JWT token and set cookie
-      await generateTokenAndSetCookie(user.user_id, res);
+      await generateTokenAndSetCookie(user.user_id, user.role, res);
 
       // Send response
       res.status(201).json({
@@ -71,7 +69,7 @@ export const login = async (req, res, next) => {
 
   try {
     // Find user by email
-    const validUser = await prisma.user.findUnique({
+    const validUser = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -88,7 +86,7 @@ export const login = async (req, res, next) => {
     
 
     // Generate JWT token and set cookie
-    await generateTokenAndSetCookie(validUser.user_id, res);
+    await generateTokenAndSetCookie(validUser.user_id, validUser.role, res);
 
     // Send response
     res.status(200).json({

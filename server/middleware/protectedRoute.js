@@ -1,46 +1,47 @@
 import jwt from 'jsonwebtoken';
 import prisma from '../prismaClient.js'; 
 
-const protectRoute = async (req, res, next) => {
+export const isVerifyToken = async (req, res, next) => {
     try {
         // Retrieve JWT token from cookies
         const token = req.cookies.jwt;
 
         // Check if token exists
-        if (!token) {
-            return res.status(401).json({ error: 'Unauthorized - No Token Provided' });
-        }
-
+        if (!token) return res.status(401).json({ error: 'Unauthorized - No Token Provided' });
+        
         // Verify token validity
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Check if token verification failed
-        if (!decoded) {
-            return res.status(401).json({ error: 'Unauthorized - Invalid Token' });
-        }
-
-        // Find user by decoded userId and exclude password field
+        
+        // Find user by decoded userId
         const user = await prisma.user.findUnique({
             where: {
                 user_id: decoded.userId,
             },
             select: {
-                password: false,
+                user_id: true,
+                role: true,
             },
         });
 
         // Check if user exists
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        req.user = user;
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        
+        // Attach user information to the request object
+        req.user = {
+            id: user.user_id,
+            role: user.role,
+        };
 
         next();
     } catch (error) {
-        console.log('Error in protectRoute middleware: ', error.message);
+        console.error('Error in protectRoute middleware: ', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
 
-export default protectRoute;
+export const isAdmin = (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+        return next();
+    }
+    return res.status(403).json({ error: 'Forbidden - Insufficient permissions' }); 
+};
