@@ -66,3 +66,42 @@ export const createEvent = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getAllEvent = async (req, res, next) => {
+    try {
+        // Fetch all events from the database
+        const events = await prisma.event.findMany();
+
+        // If no events were found, return a 404 response
+        if (events.length === 0) {
+            return res.status(404).json({ message: 'No Events found' });
+        }
+
+        // Create an array to hold events with admin usernames
+        const eventsWithAdmin = await Promise.all(
+            events.map(async (event) => {
+                // Fetch admin details based on admin_id
+                const admin = await prisma.user.findUnique({
+                    where: { user_id: event.admin_id },
+                    select: { username: true },
+                });
+
+                return {
+                    ...event,
+                    created_by: admin ? admin.username : 'Unknown',
+                };
+            })
+        );
+
+        // Return the retrieved events with admin usernames
+        return res.status(200).json({
+            message: 'Events retrieved successfully',
+            events: eventsWithAdmin,
+        });
+
+    } catch (error) {
+        // Log the error and pass it to the next middleware
+        console.error('Error retrieving Events:', error);
+        next(error);
+    }
+};
