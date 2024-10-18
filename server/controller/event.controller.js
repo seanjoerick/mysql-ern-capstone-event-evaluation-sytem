@@ -60,7 +60,6 @@ export const createEvent = async (req, res, next) => {
             message: `Event ${event_title} created successfully`,
             event: newEvent,
         });
-
     } catch (error) {
         console.error('Error creating event:', error);
         next(error);
@@ -77,7 +76,7 @@ export const getAllEvent = async (req, res, next) => {
             return res.status(404).json({ message: 'No Events found' });
         }
 
-        // Create an array to hold events with admin usernames
+        // Create an array to hold events with admin usernames, excluding admin_id
         const eventsWithAdmin = await Promise.all(
             events.map(async (event) => {
                 // Fetch admin details based on admin_id
@@ -86,22 +85,61 @@ export const getAllEvent = async (req, res, next) => {
                     select: { username: true },
                 });
 
+                // Exclude admin_id
+                const { admin_id, ...eventWithoutAdminId } = event;
+
                 return {
-                    ...event,
+                    ...eventWithoutAdminId,
                     created_by: admin ? admin.username : 'Unknown',
                 };
             })
         );
-
-        // Return the retrieved events with admin usernames
+    
         return res.status(200).json({
             message: 'Events retrieved successfully',
             events: eventsWithAdmin,
         });
-
     } catch (error) {
-        // Log the error and pass it to the next middleware
         console.error('Error retrieving Events:', error);
         next(error);
     }
 };
+
+export const createEventCriteria = async (req, res, next) => {
+    const { eventId } = req.params;
+    const { criteria_name, max_score } = req.body;
+
+    // Validate input
+    if (!criteria_name || !max_score) return res.status(400).json({ error: 'Criteria name and max score are required!' });
+    
+    try {
+        // Check if criteria already exists for the specified event
+        const existingCriteria = await prisma.eventCriteria.findFirst({
+            where: {
+                event_id: parseInt(eventId),
+                criteria_name: criteria_name,
+            },
+        });
+
+        // If the criteria already exists, return an error
+        if (existingCriteria) return res.status(400).json({ error: `Criteria ${criteria_name} already exist!` });
+        
+        // Create new criteria if it doesn't exist
+        const newCriteria = await prisma.eventCriteria.create({
+            data: {
+                event_id: parseInt(eventId),
+                criteria_name,
+                max_score,
+            },
+        });
+
+        return res.status(201).json({
+            message: `Event criteria ${criteria_name} created successfully`,
+            criteria: newCriteria,
+        });
+    } catch (error) {
+        console.error('Error creating event criteria:', error);
+        next(error);
+    }
+};
+

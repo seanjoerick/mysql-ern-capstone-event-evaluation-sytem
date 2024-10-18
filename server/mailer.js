@@ -34,7 +34,10 @@ export const sendReminderEmail = async (recipientEmail, eventTitle, eventStartDa
                 <p style="color: #555;">Hello students,</p>
                 <p style="color: #555;">This is a reminder for the upcoming event:</p>
                 <h3 style="color: #007bff;">${eventTitle}</h3>
-                <p style="color: #555;">📅 <strong>Date:</strong> ${formattedStartDate}</p>
+                <p style="color: #555;">
+                    <img src="https://img.icons8.com/ios-filled/50/000000/planner.png" alt="Calendar Icon" style="width: 20px; vertical-align: middle; margin-right: 5px;">
+                    <strong>Date:</strong> ${formattedStartDate}
+                </p>
                 <p style="color: #555;">We look forward to your participation!</p>
                 <p style="color: #555;">Thank you!<br><strong>Event Organizer</strong></p>
                 <hr style="border-top: 1px solid #eee;">
