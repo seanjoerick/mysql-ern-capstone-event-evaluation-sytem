@@ -6,9 +6,10 @@ import {
   faCalendarAlt, 
   faFileAlt, 
   faCog, 
-  faSignOutAlt, 
   faChevronDown // Import the chevron down icon for the dropdown
 } from '@fortawesome/free-solid-svg-icons';
+import Logout from './Logout';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const Sidebar = () => {
   const [isAccountsOpen, setIsAccountsOpen] = useState(false); // State for dropdown visibility
@@ -22,24 +23,26 @@ const Sidebar = () => {
       <div className="relative text-center mb-4">
         <h2 className="text-xl font-bold mb-2">Event Evaluation System</h2>
         <hr className="border-t border-gray-300 my-4" />
-        <a href="javascript:void(0)">
+        <Link to="/">
           <img src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" alt="Logo" className="w-[160px] mx-auto" />
-        </a>
+        </Link>
       </div>
 
       <div className="overflow-auto py-6 h-full mt-4">
         <ul className="space-y-1">
           {/* Main Navigation */}
           <li>
-            <a href="javascript:void(0)"
+            <Link to="/dashboard"
               className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
               <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
               <span>Dashboard</span>
-            </a>
+            </Link>
           </li>
 
+          <hr className="border-t border-gray-300 my-4" />
+
           <li>
-            <a href="javascript:void(0)"
+            <a href="#" // Keep as an anchor since this is a toggle
               onClick={toggleAccounts} // Toggle dropdown on click
               className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all cursor-pointer">
               <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -49,16 +52,16 @@ const Sidebar = () => {
             {isAccountsOpen && ( // Conditionally render dropdown items
               <ul className="pl-6 mt-1 space-y-1">
                 <li>
-                  <a href="javascript:void(0)"
+                  <Link to="/manage-accounts"
                     className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all">
                     <span>Manage Accounts</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="javascript:void(0)"
+                  <Link to="/accounts"
                     className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all">
                     <span>Accounts</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             )}
@@ -67,21 +70,21 @@ const Sidebar = () => {
           <hr className="border-t border-gray-300 my-4" />
 
           <li>
-            <a href="javascript:void(0)"
+            <Link to="/events"
               className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
               <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
               <span>Events</span>
-            </a>
+            </Link>
           </li>
 
           <hr className="border-t border-gray-300 my-4" />
 
           <li>
-            <a href="javascript:void(0)"
+            <Link to="/reports"
               className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
               <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
               <span>Reports</span>
-            </a>
+            </Link>
           </li>
         </ul>
 
@@ -90,19 +93,13 @@ const Sidebar = () => {
           <ul className="space-y-1">
             {/* Bottom Navigation */}
             <li>
-              <a href="javascript:void(0)"
+              <Link to="/settings"
                 className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
                 <FontAwesomeIcon icon={faCog} className="mr-2" />
                 <span>Settings</span>
-              </a>
+              </Link>
             </li>
-            <li>
-              <a href="javascript:void(0)"
-                className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-                <span>Logout</span>
-              </a>
-            </li>
+            <Logout /> {/* Use the Logout component */}
           </ul>
         </div>
       </div>
