@@ -22,7 +22,7 @@ export default function Login() {
             src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" 
             alt="Trimex Logo" 
             className="mx-auto mb-4 h-20 w-auto"
-            style={{ height: '100px', width: '300px' }}
+            style={{ height: '100px', width: '250px' }}
           />
         </div>
 
