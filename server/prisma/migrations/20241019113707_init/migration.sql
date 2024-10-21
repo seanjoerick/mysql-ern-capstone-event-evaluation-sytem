@@ -80,7 +80,6 @@ CREATE TABLE `tbl_year_level_type` (
 CREATE TABLE `tbl_strand` (
     `strand_id` INTEGER NOT NULL AUTO_INCREMENT,
     `strand_name` VARCHAR(191) NOT NULL,
-    `year_level_id` INTEGER NULL,
 
     PRIMARY KEY (`strand_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -89,7 +88,6 @@ CREATE TABLE `tbl_strand` (
 CREATE TABLE `tbl_courses` (
     `course_id` INTEGER NOT NULL AUTO_INCREMENT,
     `course_name` VARCHAR(191) NOT NULL,
-    `year_level_id` INTEGER NULL,
 
     PRIMARY KEY (`course_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -98,7 +96,36 @@ CREATE TABLE `tbl_courses` (
 CREATE TABLE `tbl_tesda_courses` (
     `tesda_course_id` INTEGER NOT NULL AUTO_INCREMENT,
     `course_name` VARCHAR(191) NOT NULL,
-    `year_level_id` INTEGER NULL,
 
     PRIMARY KEY (`tesda_course_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `tbl_students` ADD CONSTRAINT `tbl_students_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `tbl_users`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_students` ADD CONSTRAINT `tbl_students_year_level_id_fkey` FOREIGN KEY (`year_level_id`) REFERENCES `tbl_year_level_type`(`year_level_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_students` ADD CONSTRAINT `tbl_students_strand_id_fkey` FOREIGN KEY (`strand_id`) REFERENCES `tbl_strand`(`strand_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_students` ADD CONSTRAINT `tbl_students_course_id_fkey` FOREIGN KEY (`course_id`) REFERENCES `tbl_courses`(`course_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_students` ADD CONSTRAINT `tbl_students_tesda_course_id_fkey` FOREIGN KEY (`tesda_course_id`) REFERENCES `tbl_tesda_courses`(`tesda_course_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_event_criteria` ADD CONSTRAINT `tbl_event_criteria_event_id_fkey` FOREIGN KEY (`event_id`) REFERENCES `tbl_events`(`event_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_evaluations` ADD CONSTRAINT `tbl_evaluations_event_id_fkey` FOREIGN KEY (`event_id`) REFERENCES `tbl_events`(`event_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_evaluations` ADD CONSTRAINT `tbl_evaluations_student_id_fkey` FOREIGN KEY (`student_id`) REFERENCES `tbl_students`(`student_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_evaluation_details` ADD CONSTRAINT `tbl_evaluation_details_evaluation_id_fkey` FOREIGN KEY (`evaluation_id`) REFERENCES `tbl_evaluations`(`evaluation_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `tbl_evaluation_details` ADD CONSTRAINT `tbl_evaluation_details_criteria_id_fkey` FOREIGN KEY (`criteria_id`) REFERENCES `tbl_event_criteria`(`criteria_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

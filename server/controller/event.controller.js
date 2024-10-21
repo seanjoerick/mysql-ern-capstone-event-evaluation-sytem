@@ -8,6 +8,14 @@ export const createEvent = async (req, res, next) => {
     // Validate input fields
     if (!event_title || !event_description || !start_date || !end_date) 
         return res.status(400).json({ error: 'Event title, description, start date, and end date are required' });
+
+      // Check that start date is before end date
+      if (new Date(start_date) >= new Date(end_date)) return res.status(400).json({ error: 'Start date must be before end date.' });
+
+       // Check that start date is not in the past
+    const currentDate = new Date();
+    if (new Date(start_date) < currentDate) 
+        return res.status(400).json({ error: 'Start date cannot be in the past.' });
     
     try {
         // Check for existing events with overlapping dates
@@ -66,6 +74,7 @@ export const createEvent = async (req, res, next) => {
     }
 };
 
+
 export const getAllEvent = async (req, res, next) => {
     try {
         // Fetch all events from the database
@@ -94,13 +103,114 @@ export const getAllEvent = async (req, res, next) => {
                 };
             })
         );
-    
+        
+        const eventCount = events.length;
+
         return res.status(200).json({
             message: 'Events retrieved successfully',
+            count:  eventCount,
             events: eventsWithAdmin,
         });
     } catch (error) {
         console.error('Error retrieving Events:', error);
+        next(error);
+    }
+};
+
+export const updateEvent = async (req, res, next) => {
+    const { event_title, event_description, start_date, end_date } = req.body;
+    const { eventId } = req.params;
+
+    // Validate input
+    if (!event_title) return res.status(400).json({ error: 'Event title is required!' });
+    if (!event_description) return res.status(400).json({ error: 'Event description is required!' });
+    if (!start_date) return res.status(400).json({ error: 'Event start date is required!' });
+    if (!end_date) return res.status(400).json({ error: 'Event end date is required!' });
+
+    try {
+        // Fetch the existing event by ID
+        const existingEvent = await prisma.event.findFirst({
+            where: {
+                event_id: Number(eventId),
+            },
+        });
+
+        if (!existingEvent) return res.status(404).json({ error: 'Event not found!' });
+
+        // If the new title and description are the same as the existing ones, return without updating
+        if (
+            existingEvent.event_title === event_title &&
+            existingEvent.event_description === event_description &&
+            existingEvent.start_date.toISOString() === new Date(start_date).toISOString() && 
+            existingEvent.end_date.toISOString() === new Date(end_date).toISOString() 
+        ) {
+            return res.status(200).json({ message: 'No changes made to the event.' }); 
+        }
+
+        // Proceed with the update
+        const updatedEvent = await prisma.event.update({
+            where: {
+                event_id: Number(eventId),
+            },
+            data: {
+                event_title,
+                event_description,
+                start_date: new Date(start_date),
+                end_date: new Date(end_date),
+            },
+        });
+
+        res.status(200).json({
+            message: 'Event updated successfully',
+            Event: updatedEvent,
+        });
+
+    } catch (error) {
+        console.error('Error updating event:', error);
+        next(error);
+    }
+};
+
+export const deleteEvent = async (req, res, next) => {
+    const { eventId } = req.params;
+
+    try {
+        // First, retrieve the event to get the event_title
+        const event = await prisma.event.findUnique({
+            where: {
+                event_id: Number(eventId),
+            },
+        });
+
+        // If the event doesn't exist, respond with an error
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        // First, delete all associated evaluations
+        await prisma.evaluation.deleteMany({
+            where: {
+                event_id: Number(eventId),
+            },
+        });
+
+        // Delete all associated criteria
+        await prisma.eventCriteria.deleteMany({
+            where: {
+                event_id: Number(eventId),
+            },
+        });
+
+        // Finally, delete the event
+        await prisma.event.delete({
+            where: {
+                event_id: Number(eventId),
+            },
+        });
+
+        res.status(200).json({ message: `Event ${event.event_title} deleted successfully` });
+    } catch (error) {
+        console.error('Error deleting event:', error);
         next(error);
     }
 };

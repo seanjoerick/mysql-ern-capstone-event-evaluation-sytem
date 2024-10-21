@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '../components/Pagination';
 import useGetAdmins from '../hooks/useGetAdmin'; 
 import AdminModal from '../components/AdminModal';
+import EditAdminModal from '../components/AdminEditModal';
 import { toast } from 'react-hot-toast';
 
 export default function AdminAccounts() {
   const { admins, setAdmins, loading } = useGetAdmins();
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+  const [showEditAccountModal, setShowEditAccountModal] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
 
-  // Filter admins based on the search term
-  const filteredAdmins = admins.filter(admin =>
-    admin.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    admin.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Calculate the total pages based on filtered results
-  const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage);
+  // Calculate the total pages based on the number of admins
+  const totalPages = Math.ceil(admins.length / itemsPerPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   // Calculate the displayed admins based on the current page
-  const displayedAdmins = filteredAdmins.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const displayedAdmins = admins.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleAddAccount = async (newAccount) => {
     try {
@@ -43,15 +39,15 @@ export default function AdminAccounts() {
       if (data.error) throw new Error(data.error);
 
       toast.success(data.message);
-// Make sure that the new admin has the same structure as the others
-const formattedAccount = {
-  ...newAccount,
-  role: newAccount.role || 'admin', // Set a default role if not present
-  created_at: new Date().toISOString() // Set current time for created_at
-};
+      
+      const formattedAccount = {
+        ...newAccount,
+        role: newAccount.role || 'admin',
+        created_at: new Date().toISOString() 
+      };
 
-// Update the admins list with the new admin
-setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
+      // Update the admins list with the new admin
+      setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
 
       setShowAddAccountModal(false);
     } catch (error) {
@@ -61,40 +57,42 @@ setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
     }
   };
 
+  
+  const handleUpdateAdmin = async (updatedAdmin) => {
+
+    try {
+      const res = await fetch(`/api/user/update/${updatedAdmin.user_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedAdmin),
+      });
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      setAdmins(prevAdmins => prevAdmins.map(admin => admin.user_id === updatedAdmin.user_id ? updatedAdmin : admin));
+      toast.success(data.message);
+      setShowEditAccountModal(false);
+    } catch (error) {
+      toast.error(`${error.message}`);
+      console.error('Error updating event:', error);
+      setShowEditAccountModal(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
         <h2 className="text-2xl font-bold">Manage Admin</h2>
-        <div className="flex items-center">
-          <label className="input input-bordered flex items-center gap-2 mr-4">
-            <input 
-              type="text" 
-              className="grow" 
-              placeholder="Search" 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="h-4 w-4 opacity-70"
-            >
-              <path
-                fillRule="evenodd"
-                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </label>
-          <button
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-            onClick={() => setShowAddAccountModal(true)}
-          >
-            + ADD ACCOUNTS
-          </button>
-        </div>
+        <button
+          type="button"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+          onClick={() => setShowAddAccountModal(true)}
+        >
+          <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> ADD ACCOUNT 
+        </button>
       </div>
 
       {/* Accounts Table */}
@@ -107,11 +105,11 @@ setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
           <table className="w-full text-sm text-left rtl:text-right text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-4 w-1/5">Username</th>
-                <th scope="col" className="px-6 py-4 w-1/5">Email Address</th>
-                <th scope="col" className="px-6 py-4 w-1/5">Role</th>
-                <th scope="col" className="px-6 py-4 w-1/5">Created</th>
-                <th scope="col" className="px-6 py-4 w-1/5 whitespace-nowrap text-center">Actions</th>
+                <th scope="col" className="px-6 py-4 w-1/4">Username</th>
+                <th scope="col" className="px-6 py-4 w-1/4">Email Address</th>
+                <th scope="col" className="px-6 py-4 w-1/4">Role</th>
+                <th scope="col" className="px-6 py-4 w-1/4">Created</th>
+                <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -133,12 +131,15 @@ setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
                       hour12: true,
                     })}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap max-w-xs">
-                    <div className="flex justify-center">
-                      <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2">
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                    </div>
+                  <td className="px-6 py-4 flex space-x-2">
+                    <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
+                      onClick={() => {
+                        setSelectedAdmin(admin)
+                        setShowEditAccountModal(true);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -156,14 +157,22 @@ setAdmins((prevAdmins) => [...prevAdmins, formattedAccount]);
         />
       </div>
 
-       {/* Add Account Modal */}
-       {showAddAccountModal && (
+      {/* Add Account Modal */}
+      {showAddAccountModal && (
         <AdminModal 
           onClose={() => setShowAddAccountModal(false)} 
           onAddAccount={handleAddAccount} 
         />
       )}
 
+         {/* Edit Event Modal */}
+         {showEditAccountModal && (
+        <EditAdminModal
+          admin={selectedAdmin}
+          onClose={() => setShowEditAccountModal(false)}
+          onUpdateAdmin={handleUpdateAdmin}
+        />
+      )}
     </div>
   );
 }

@@ -8,9 +8,10 @@ import Main from './components/Main';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
 import Reports from './pages/Reports';
-import Manage from './pages/Manage';; 
+import Manage from './pages/Manage';
 import Admin from './pages/AdminAccounts';
 import Settings from './pages/Settings';
+import EventList from './pages/EventList';
 
 const App = () => {
   const { authUser } = useAuthContext();
@@ -32,6 +33,7 @@ const App = () => {
             <Route path='reports' element={<Reports />} />
             <Route path='manage' element={<Manage />} />
             <Route path='admins' element={<Admin/>} /> 
+            <Route path='criteria' element={<EventList/>} /> 
             <Route path='settings' element={<Settings/>} /> 
             {/* Add other protected routes here */}
           </Route>

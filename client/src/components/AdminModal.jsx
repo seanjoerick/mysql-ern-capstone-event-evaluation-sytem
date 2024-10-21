@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 
 const AdminModal = ({ onClose, onAddAccount }) => {
@@ -27,7 +27,7 @@ const AdminModal = ({ onClose, onAddAccount }) => {
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              ADD ACCOUNT
+             ADD ACCOUNT
             </h3>
             <button
               type="button"
@@ -80,7 +80,7 @@ const AdminModal = ({ onClose, onAddAccount }) => {
                   type="submit"
                   className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
-                  Add Account
+                   <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> Add Account
                 </button>
               </div>
             </form>

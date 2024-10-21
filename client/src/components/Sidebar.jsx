@@ -13,10 +13,15 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
   const [isAccountsOpen, setIsAccountsOpen] = useState(false);
+  const [isEventsOpen, setIsEventsOpen] = useState(false);
   const location = useLocation();
 
   const toggleAccounts = () => {
     setIsAccountsOpen(prevState => !prevState);
+  };
+
+  const toggleEvents = () => { 
+    setIsEventsOpen(prevState => !prevState);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -60,7 +65,7 @@ const Sidebar = () => {
                     to="/manage"
                     className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/manage') ? 'text-blue-600' : ''}`}
                   >
-                    <span>Manage Students</span>
+                    <span>Students</span>
                   </Link>
                 </li>
                 <li>
@@ -68,7 +73,7 @@ const Sidebar = () => {
                     to="/admins"
                     className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/admins') ? 'text-blue-600' : ''}`}
                   >
-                    <span>Manage Admins</span>
+                    <span>Admins</span>
                   </Link>
                 </li>
               </ul>
@@ -78,13 +83,33 @@ const Sidebar = () => {
           <hr className="border-t border-gray-300 my-4" />
 
           <li>
-            <Link 
-              to="/events"
-              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ${isActive('/events') ? 'text-blue-600' : ''}`}
-            >
+            <button
+              onClick={toggleEvents} // Toggle dropdown on click
+              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all w-full text-left ${isActive('/events') || isActive('/event-criteria') ? 'text-blue-600' : ''}`}>
               <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
               <span>Events</span>
-            </Link>
+              <FontAwesomeIcon icon={faChevronDown} className="ml-auto" /> {/* Arrow icon */}
+            </button>
+            {isEventsOpen && ( // Conditionally render dropdown items for events
+              <ul className="pl-6 mt-1 space-y-1">
+                <li>
+                  <Link 
+                    to="/events"
+                    className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/events') ? 'text-blue-600' : ''}`}
+                  >
+                    <span>Manage Events</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/criteria"
+                    className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/criteria') ? 'text-blue-600' : ''}`}
+                  >
+                    <span>Event list</span>
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
 
           <hr className="border-t border-gray-300 my-4" />
