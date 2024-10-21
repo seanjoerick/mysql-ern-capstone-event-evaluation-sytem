@@ -8,7 +8,7 @@ import Main from './components/Main';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
 import Reports from './pages/Reports';
-import Manage from './pages/Manage';
+import Students from './pages/Students';
 import Admin from './pages/AdminAccounts';
 import Settings from './pages/Settings';
 import EventList from './pages/EventList';
@@ -31,7 +31,7 @@ const App = () => {
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='events' element={<Events />} />
             <Route path='reports' element={<Reports />} />
-            <Route path='manage' element={<Manage />} />
+            <Route path='students' element={<Students />} />
             <Route path='admins' element={<Admin/>} /> 
             <Route path='criteria' element={<EventList/>} /> 
             <Route path='settings' element={<Settings/>} /> 

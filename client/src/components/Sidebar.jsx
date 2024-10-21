@@ -53,7 +53,7 @@ const Sidebar = () => {
           <li>
             <button
               onClick={toggleAccounts} // Toggle dropdown on click
-              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all w-full text-left ${isActive('/manage-accounts') || isActive('/manage') || isActive('/admins') ? 'text-blue-600' : ''}`}>
+              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all w-full text-left ${isActive('/students') || isActive('/admins') ? 'text-blue-600' : ''}`}>
               <FontAwesomeIcon icon={faUser} className="mr-2" />
               <span>Accounts</span>
               <FontAwesomeIcon icon={faChevronDown} className="ml-auto" /> {/* Arrow icon */}
@@ -62,8 +62,8 @@ const Sidebar = () => {
               <ul className="pl-6 mt-1 space-y-1">
                 <li>
                   <Link 
-                    to="/manage"
-                    className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/manage') ? 'text-blue-600' : ''}`}
+                    to="/students"
+                    className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/students') ? 'text-blue-600' : ''}`}
                   >
                     <span>Students</span>
                   </Link>
@@ -85,7 +85,7 @@ const Sidebar = () => {
           <li>
             <button
               onClick={toggleEvents} // Toggle dropdown on click
-              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all w-full text-left ${isActive('/events') || isActive('/event-criteria') ? 'text-blue-600' : ''}`}>
+              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all w-full text-left ${isActive('/events') || isActive('/criteria') ? 'text-blue-600' : ''}`}>
               <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
               <span>Events</span>
               <FontAwesomeIcon icon={faChevronDown} className="ml-auto" /> {/* Arrow icon */}
@@ -105,7 +105,7 @@ const Sidebar = () => {
                     to="/criteria"
                     className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/criteria') ? 'text-blue-600' : ''}`}
                   >
-                    <span>Event list</span>
+                    <span>Event List</span>
                   </Link>
                 </li>
               </ul>
