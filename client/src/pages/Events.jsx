@@ -47,29 +47,6 @@ export default function Events() {
         }
     };
 
-    const handleDeleteEvent = async () => {
-        if (!eventToDelete) return;
-        try {
-            const res = await fetch(`/api/event/delete/${eventToDelete.event_id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to delete event');
-
-            setEvents(prevEvents => prevEvents.filter(event => event.event_id !== eventToDelete.event_id));
-            toast.success(data.message);
-            setShowDeleteModal(false);
-            setEventToDelete(null);
-        } catch (error) {
-            toast.error(`${error.message}`);
-            console.error('Error deleting event:', error);
-        }
-    };
-
     const handleUpdateEvent = async (updatedEvent) => {
         try {
             const res = await fetch(`/api/event/update/${updatedEvent.event_id}`, {
@@ -91,6 +68,29 @@ export default function Events() {
             console.error('Error updating event:', error);
         } finally {
             setShowEditEventModal(false);
+        }
+    };
+
+    const handleDeleteEvent = async () => {
+        if (!eventToDelete) return;
+        try {
+            const res = await fetch(`/api/event/delete/${eventToDelete.event_id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to delete event');
+
+            setEvents(prevEvents => prevEvents.filter(event => event.event_id !== eventToDelete.event_id));
+            toast.success(data.message);
+            setShowDeleteModal(false);
+            setEventToDelete(null);
+        } catch (error) {
+            toast.error(`${error.message}`);
+            console.error('Error deleting event:', error);
         }
     };
 
@@ -125,7 +125,7 @@ export default function Events() {
                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                         onClick={() => setShowAddEventModal(true)}
                     >
-                        <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> ADD EVENT
+                        <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> EVENT
                     </button>
                 </div>
             </div>

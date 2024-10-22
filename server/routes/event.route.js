@@ -13,8 +13,10 @@ router.delete('/delete/:eventId', isVerifyToken, isAdmin, deleteEvent);
 router.post('/criteria/:eventId', isVerifyToken, isAdmin, createEventCriteria);
 router.get('/criteria/getall', getAllCriteria);
 router.get('/criteria/get/:eventId', getEventCriteria, isVerifyToken, isAdmin,  getEventCriteria);
+
 router.put('/criteria/update/:criteriaId', isVerifyToken, isAdmin, updateCriteria);
-router.delete('/criteria/delete/:criteriaId', isVerifyToken, isAdmin, deleteCriteria);
+
+router.delete('/criteria/delete/:criteriaId', isVerifyToken, isAdmin, deleteCriteria)
 
 
 export default router;

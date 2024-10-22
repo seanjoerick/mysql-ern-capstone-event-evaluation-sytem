@@ -336,6 +336,11 @@ export const updateCriteria = async (req, res, next) => {
 
 export const deleteCriteria = async (req, res, next) => {
     const { criteriaId } = req.params;
+    
+    // Check if criteriaId is received
+    if (!criteriaId) {
+        return res.status(400).json({ error: 'Criteria ID is missing!' });
+    }
 
     try {
         // Check if the criteria exists
