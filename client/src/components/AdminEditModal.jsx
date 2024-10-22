@@ -101,7 +101,7 @@ const EditAdminModal = ({ admin, onClose, onUpdateAdmin }) => {
                   ) : (
                     <>
                       <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-                      Update Admin
+                      Update
                     </>
                   )}
                 </button>

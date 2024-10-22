@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import Pagination from '../components/Pagination';
 import useGetAdmins from '../hooks/useGetAdmin'; 
 import AdminModal from '../components/AdminModal';
 import EditAdminModal from '../components/AdminEditModal';
@@ -9,21 +8,9 @@ import { toast } from 'react-hot-toast';
 
 export default function AdminAccounts() {
   const { admins, setAdmins, loading } = useGetAdmins();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
   const [showEditAccountModal, setShowEditAccountModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
-
-  // Calculate the total pages based on the number of admins
-  const totalPages = Math.ceil(admins.length / itemsPerPage);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Calculate the displayed admins based on the current page
-  const displayedAdmins = admins.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleAddAccount = async (newAccount) => {
     try {
@@ -57,9 +44,7 @@ export default function AdminAccounts() {
     }
   };
 
-  
   const handleUpdateAdmin = async (updatedAdmin) => {
-
     try {
       const res = await fetch(`/api/user/update/${updatedAdmin.user_id}`, {
         method: 'PUT',
@@ -91,12 +76,12 @@ export default function AdminAccounts() {
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
           onClick={() => setShowAddAccountModal(true)}
         >
-          <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> ADD ACCOUNT 
+          <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> ACCOUNT 
         </button>
       </div>
 
       {/* Accounts Table */}
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
+      <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
@@ -113,7 +98,7 @@ export default function AdminAccounts() {
               </tr>
             </thead>
             <tbody>
-              {displayedAdmins.map((admin, index) => (
+              {admins.map((admin, index) => (
                 <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900">
                     {admin.username}
@@ -134,7 +119,7 @@ export default function AdminAccounts() {
                   <td className="px-6 py-4 flex space-x-2">
                     <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
                       onClick={() => {
-                        setSelectedAdmin(admin)
+                        setSelectedAdmin(admin);
                         setShowEditAccountModal(true);
                       }}
                     >
@@ -148,15 +133,6 @@ export default function AdminAccounts() {
         )}
       </div>
 
-      {/* Pagination Component */}
-      <div className="flex justify-end">
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={totalPages} 
-          onPageChange={handlePageChange} 
-        />
-      </div>
-
       {/* Add Account Modal */}
       {showAddAccountModal && (
         <AdminModal 
@@ -165,8 +141,8 @@ export default function AdminAccounts() {
         />
       )}
 
-         {/* Edit Event Modal */}
-         {showEditAccountModal && (
+      {/* Edit Account Modal */}
+      {showEditAccountModal && (
         <EditAdminModal
           admin={selectedAdmin}
           onClose={() => setShowEditAccountModal(false)}

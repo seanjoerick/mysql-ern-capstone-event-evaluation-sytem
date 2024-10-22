@@ -1,28 +1,15 @@
 import React, { useState } from 'react';
-import Pagination from '../components/Pagination';
 import useGetStudents from '../hooks/useGetStudents';
 
 export default function Students() {
-  const { students, setStudents, count, loading, error } = useGetStudents();
+  const { students, loading, error } = useGetStudents();
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
 
   // Filter students based on the search term
   const filteredStudents = students.filter(student =>
     student.User?.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.User?.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Calculate the total pages based on filtered results
-  const totalPages = Math.max(Math.ceil(filteredStudents.length / itemsPerPage), 1);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Calculate the displayed students based on the current page
-  const displayedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="p-6">
@@ -54,7 +41,7 @@ export default function Students() {
       </div>
 
       {/* Accounts Table */}
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
+      <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
@@ -78,7 +65,7 @@ export default function Students() {
                   </tr>
                 </thead>
                 <tbody>
-                  {displayedStudents.map((student, index) => (
+                  {filteredStudents.map((student, index) => (
                     <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
                       <th scope="row" className="px-6 py-4 font-medium text-gray-900">
                         {student?.User.username}
@@ -100,7 +87,6 @@ export default function Students() {
                           day: 'numeric',
                         })}
                       </td>
-                    
                     </tr>
                   ))}
                 </tbody>
@@ -109,17 +95,6 @@ export default function Students() {
           </>
         )}
       </div>
-
-      {/* Render Pagination only if there are filtered students */}
-      {filteredStudents.length > 0 && (
-        <div className="flex justify-end">
-          <Pagination 
-            currentPage={currentPage} 
-            totalPages={totalPages} 
-            onPageChange={handlePageChange} 
-          />
-        </div>
-      )}
     </div>
   );
 }

@@ -231,6 +231,7 @@ export const createEventCriteria = async (req, res, next) => {
     }
 
     try {
+        // Check if the criteria already exists for the event
         const existingCriteria = await prisma.eventCriteria.findFirst({
             where: {
                 event_id: parseInt(eventId),
@@ -242,6 +243,7 @@ export const createEventCriteria = async (req, res, next) => {
             return res.status(400).json({ error: `Criteria ${criteria_name} already exists!` });
         }
         
+        // Create new event criteria
         const newCriteria = await prisma.eventCriteria.create({
             data: {
                 event_id: parseInt(eventId),
@@ -265,6 +267,103 @@ export const createEventCriteria = async (req, res, next) => {
     }
 };
 
+export const updateCriteria = async (req, res, next) => {
+    const { criteria_name, max_score } = req.body;
+    const { criteriaId } = req.params;
+
+    // Validate input
+    if (!criteria_name || max_score === undefined) {
+        return res.status(400).json({ error: 'Criteria name and max score are required!' });
+    }
+
+    // Ensure max_score is a number and equals 10
+    const maxScore = parseInt(max_score);
+    if (isNaN(maxScore) || maxScore !== 10) {
+        return res.status(400).json({ error: 'Max score must be exactly 10!' });
+    }
+
+    try {
+        // Fetch the existing Criteria by ID
+        const existingCriteria = await prisma.eventCriteria.findFirst({
+            where: {
+                criteria_id: Number(criteriaId),
+            },
+        });
+
+        if (!existingCriteria) {
+            return res.status(404).json({ error: `Criteria not found!` });
+        }
+
+         // If the new criteria_name and description are the same as the existing ones, return without updating
+         if (existingCriteria.criteria_name === criteria_name && existingCriteria.max_score === max_score) {
+            return res.status(200).json({ error: 'No changes made, criteria and max-score are the same.' });
+        }
+
+        // Check for duplicate criteria name (exclude current criteria)
+        const duplicateCriteria = await prisma.eventCriteria.findFirst({
+            where: {
+                criteria_name: criteria_name,
+                event_id: existingCriteria.event_id,
+                criteria_id: { not: Number(criteriaId) },
+            },
+        });
+
+        if (duplicateCriteria) {
+            return res.status(400).json({ error: `'${criteria_name}' already exists!` });
+        }
+
+        // Proceed with the update
+        const updatedCriteria = await prisma.eventCriteria.update({
+            where: {
+                criteria_id: Number(criteriaId),
+            },
+            data: {
+                criteria_name,
+                max_score: maxScore,
+            },
+        });
+
+        res.status(200).json({
+            message: 'Criteria updated successfully',
+            criteria: updatedCriteria,
+        });
+
+    } catch (error) {
+        console.error('Error updating criteria:', error);
+        next(error);
+    }
+};
+
+export const deleteCriteria = async (req, res, next) => {
+    const { criteriaId } = req.params;
+
+    try {
+        // Check if the criteria exists
+        const existingCriteria = await prisma.eventCriteria.findFirst({
+            where: {
+                criteria_id: Number(criteriaId),
+            },
+        });
+
+        if (!existingCriteria) {
+            return res.status(404).json({ error: 'Criteria not found!' });
+        }
+
+        // Delete the criteria
+        await prisma.eventCriteria.delete({
+            where: {
+                criteria_id: Number(criteriaId),
+            },
+        });
+
+        return res.status(200).json({
+            message: `Criteria ${existingCriteria.criteria_name} deleted successfully.`,
+        });
+    } catch (error) {
+        console.error('Error deleting criteria:', error);
+        next(error);
+    }
+};
 
 export const getAllCriteria = async (req, res, next) => {
     try {

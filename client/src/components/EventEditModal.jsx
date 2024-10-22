@@ -112,7 +112,7 @@ const EditEventModal = ({ event, onClose, onUpdateEvent }) => {
                   ) : (
                     <>
                       <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-                      Update Event
+                      Update 
                     </>
                   )}
                 </button>

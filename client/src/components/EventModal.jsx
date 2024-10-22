@@ -107,7 +107,7 @@ const EventModal = ({ onClose, onAddEvent }) => {
                   ) : (
                     <>
                       <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-                      Add Event
+                      Event
                     </>
                   )}
                 </button>

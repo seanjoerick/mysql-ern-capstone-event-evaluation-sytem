@@ -19,7 +19,7 @@ export const admin = async (req, res, next) => {
             }
         });
 
-        if (existingUser) return res.status(400).json({ error: `Admin already exist!` });
+        if (existingUser) return res.status(400).json({ error: `User already exist!` });
         
         // Hash the password
         const salt = bcryptjs.genSaltSync(10);
