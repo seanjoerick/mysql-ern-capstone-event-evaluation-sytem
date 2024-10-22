@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import Pagination from '../components/Pagination';
 import useGetEvents from '../hooks/useGetEvents';
 import EventModal from '../components/EventModal';
 import EditEventModal from '../components/EventEditModal';
@@ -10,8 +9,6 @@ import toast from 'react-hot-toast';
 export default function Events() {
     const { events, setEvents, loading, error } = useGetEvents();
     const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7;
     const [showAddEventModal, setShowAddEventModal] = useState(false);
     const [showEditEventModal, setShowEditEventModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -24,16 +21,6 @@ export default function Events() {
         event.event_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.event_description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-    // Calculate the total pages based on filtered results
-    const totalPages = Math.max(Math.ceil(filteredEvents.length / itemsPerPage), 1);
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
-    // Calculate the displayed events based on the current page
-    const displayedEvents = filteredEvents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handleAddEvent = async (newEvent) => {
         setLoadingEvent(true);
@@ -103,7 +90,7 @@ export default function Events() {
             toast.error(`${error.message}`);
             console.error('Error updating event:', error);
         } finally {
-            setLoadingEvent(false);
+            setShowEditEventModal(false);
         }
     };
 
@@ -144,10 +131,10 @@ export default function Events() {
             </div>
 
             {/* Events Table */}
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
+            <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
                 {loading ? (
                     <div className="flex justify-center items-center h-32">
-                        <span className="loading loading-spinner loading-lg"></span>
+                         <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
                     </div>
                 ) : error ? (
                     <div className="flex justify-center items-center h-32 text-red-500">
@@ -170,7 +157,7 @@ export default function Events() {
                             </tr>
                         </thead>
                         <tbody>
-                            {displayedEvents.map((event) => (
+                            {filteredEvents.map((event) => (
                                 <tr key={event.event_id} className="odd:bg-white even:bg-gray-50 border-b">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900">
                                         {event.event_title}
@@ -222,7 +209,7 @@ export default function Events() {
                                                 setShowDeleteModal(true);
                                             }}
                                         >
-                                            <FontAwesomeIcon icon={faTrash} />
+                                            <FontAwesomeIcon icon={faTrash } />
                                         </button>
                                     </td>
                                 </tr>
@@ -231,50 +218,27 @@ export default function Events() {
                     </table>
                 )}
             </div>
-
-            {/* Pagination */}
-            <div className="flex justify-end">
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-            </div>
-
-            {/* Add Event Modal */}
-            {showAddEventModal && (
-                <EventModal
-                    onClose={() => setShowAddEventModal(false)}
-                    onAddEvent={handleAddEvent}
-                    loading={loadingEvent}
-                />
-            )}
-
-            {/* Edit Event Modal */}
+            
+            {/* Add and Edit Event Modal */}
+            {showAddEventModal && <EventModal onAddEvent={handleAddEvent} onClose={() => setShowAddEventModal(false)} />}
+                
             {showEditEventModal && (
                 <EditEventModal
                     event={selectedEvent}
-                    onClose={() => setShowEditEventModal(false)}
                     onUpdateEvent={handleUpdateEvent}
-                    loading={loadingEvent}
+                    onClose={() => setShowEditEventModal(false)}
                 />
             )}
 
-            {/* Delete Confirmation Modal */}
+            {/* Delete Event Confirmation */}
             {showDeleteModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
-                        <p className="mb-6">
-                            Are you sure you want to delete this event? <br />
-                            All data related to this event will be permanently removed. <br />
-                            This action cannot be undone. <br />
-                        </p>
-                        <div className="flex justify-end space-x-4">
-                            <button
-                                className="px-4 py-2 text-sm text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-lg"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg"
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+                        <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+                        <p className="text-sm text-gray-600">Are you sure you want to delete this event?</p>
+                        <div className="mt-6 flex justify-end space-x-2">
+                            <button className="text-gray-600 hover:text-gray-900 font-medium" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                            <button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
                                 onClick={handleDeleteEvent}
                             >
                                 Delete

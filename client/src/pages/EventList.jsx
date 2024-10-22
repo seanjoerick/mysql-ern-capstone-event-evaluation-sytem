@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import Pagination from '../components/Pagination';
 import useGetEvents from '../hooks/useGetEvents';
+import Manage from '../components/Manage';
 import toast from 'react-hot-toast';
-import Manage from '../components/Manage'; 
 
 export default function EventList() {
-  const { events, setEvents, loading, error } = useGetEvents();
+  const { events, loading, error } = useGetEvents();
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [showManageEvent, setShowManageEvent] = useState(false); 
-
-  const itemsPerPage = 7;
+  const [selectedEvent, setSelectedEvent] = useState(null); 
 
   // Filter events based on the search term
   const filteredEvents = events.filter(event =>
@@ -18,42 +15,33 @@ export default function EventList() {
     event.event_description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate the total pages based on filtered results
-  const totalPages = Math.max(Math.ceil(filteredEvents.length / itemsPerPage), 1);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Calculate the displayed events based on the current page
-  const displayedEvents = filteredEvents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const handleManageClick = () => {
-    setShowManageEvent(true); // Show manage view
+  const handleManageClick = (event) => {
+    console.log("Event ID:", event.event_id);
+    setSelectedEvent(event); 
+    setShowManageEvent(true); 
   };
 
   const handleBackToList = () => {
-    setShowManageEvent(false); // Return to event list
+    setShowManageEvent(false);
+    setSelectedEvent(null);
   };
 
   return (
     <div className="p-6">
       {showManageEvent ? ( // Conditional rendering based on state
-        <div>
-          <Manage onBack={handleBackToList} /> {/* Pass the back function */}
-        </div>
+        <Manage event={selectedEvent} onBack={handleBackToList} /> // Pass the selected event and back function
       ) : (
         <div>
           <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
             <h2 className="text-2xl font-bold">Events</h2>
             <div className="flex items-center">
               <label className="input input-bordered flex items-center gap-2 mr-4">
-                <input 
-                  type="text" 
-                  className="grow" 
-                  placeholder="Search" 
+                <input
+                  type="text"
+                  className="grow"
+                  placeholder="Search"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -72,16 +60,16 @@ export default function EventList() {
           </div>
 
           {/* Events Table */}
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
+          <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
             {loading ? (
               <div className="flex justify-center items-center h-32">
-                <span className="loading loading-spinner loading-lg"></span>
+                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
               </div>
             ) : error ? (
               <div className="flex justify-center items-center h-32 text-red-500">
                 <p>{error}</p>
               </div>
-            ) : filteredEvents.length === 0 ? ( 
+            ) : filteredEvents.length === 0 ? (
               <div className="flex justify-center items-center h-32 text-gray-500">
                 <p>No events available.</p>
               </div>
@@ -89,49 +77,64 @@ export default function EventList() {
               <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-4 w-1/4">Event Title</th>
-                    <th scope="col" className="px-6 py-4 w-1/4">Description</th>
-                    <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
+                    <th className="px-6 py-4 w-1/5">Event Title</th>
+                    <th className="px-6 py-4 w-1/5">Description</th>
+                    <th className="px-6 py-4 w-1/5">Created date</th>
+                    <th className="px-6 py-4 w-1/5">Status</th>
+                    <th className="px-6 py-4 w-1/5">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {displayedEvents.map((event) => (
+                  {filteredEvents.map((event) => (
                     <tr key={event.event_id} className="odd:bg-white even:bg-gray-50 border-b">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900">
+                      <th className="px-6 py-4 font-medium text-gray-900">
                         {event.event_title}
                       </th>
                       <td className="px-6 py-4">{event.event_description}</td>
+                      <td className="px-6 py-4">
+                                        {new Date(event.created_at).toLocaleDateString(undefined, {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: true
+                                        })}
+                                    </td>
+                      <td className="px-6 py-4">
+                        <span className={`font-medium 
+                          ${event.status === 'active' ? 'text-orange-500' : 
+                            event.status === 'ongoing' ? 'text-blue-500' : 
+                            event.status === 'completed' ? 'text-green-500' : 
+                            event.status === 'cancelled' ? 'text-red-500' : ''}`}>
+                          {event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 flex space-x-2">
                         <button
                           className="w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={handleManageClick} // Show manage view
+                          onClick={() => handleManageClick(event)} // Show manage view and pass event
                         >
                           Manage
                         </button>
                         <button
                           className="w-32 text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={handleManageClick} // Show manage view
+                          onClick={() => handleManageClick(event)} // Show manage view and pass event
                         >
-                          View feedback
+                          View Feedback
                         </button>
                         <button
                           className="w-32 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={handleManageClick} // Show manage view
+                          onClick={() => handleManageClick(event)} // Show manage view and pass event
                         >
                           View Results
                         </button>
-                        {/* Other buttons */}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-end">
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
           </div>
         </div>
       )}

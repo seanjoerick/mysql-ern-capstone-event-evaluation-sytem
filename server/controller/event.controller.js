@@ -144,7 +144,7 @@ export const updateEvent = async (req, res, next) => {
             existingEvent.start_date.toISOString() === new Date(start_date).toISOString() && 
             existingEvent.end_date.toISOString() === new Date(end_date).toISOString() 
         ) {
-            return res.status(200).json({ message: 'No changes made to the event.' }); 
+            return res.status(200).json({ error: 'No changes made to the event.' }); 
         }
 
         // Proceed with the update
@@ -220,10 +220,17 @@ export const createEventCriteria = async (req, res, next) => {
     const { criteria_name, max_score } = req.body;
 
     // Validate input
-    if (!criteria_name || !max_score) return res.status(400).json({ error: 'Criteria name and max score are required!' });
-    
+    if (!criteria_name || max_score === undefined) {
+        return res.status(400).json({ error: 'Criteria name and max score are required!' });
+    }
+
+    // Ensure max_score is a number and equals 10
+    const maxScore = parseInt(max_score);
+    if (isNaN(maxScore) || maxScore !== 10) {
+        return res.status(400).json({ error: 'Max score must be exactly 10!' });
+    }
+
     try {
-        // Check if criteria already exists for the specified event
         const existingCriteria = await prisma.eventCriteria.findFirst({
             where: {
                 event_id: parseInt(eventId),
@@ -231,21 +238,26 @@ export const createEventCriteria = async (req, res, next) => {
             },
         });
 
-        // If the criteria already exists, return an error
-        if (existingCriteria) return res.status(400).json({ error: `Criteria ${criteria_name} already exist!` });
+        if (existingCriteria) {
+            return res.status(400).json({ error: `Criteria ${criteria_name} already exists!` });
+        }
         
-        // Create new criteria if it doesn't exist
         const newCriteria = await prisma.eventCriteria.create({
             data: {
                 event_id: parseInt(eventId),
                 criteria_name,
-                max_score,
+                max_score: maxScore,
             },
         });
 
         return res.status(201).json({
             message: `Event criteria ${criteria_name} created successfully`,
-            criteria: newCriteria,
+            criteria: {
+                id: newCriteria.criteria_id,
+                name: newCriteria.criteria_name,
+                max_score: newCriteria.max_score,
+                event_id: newCriteria.event_id,
+            },
         });
     } catch (error) {
         console.error('Error creating event criteria:', error);
@@ -253,3 +265,59 @@ export const createEventCriteria = async (req, res, next) => {
     }
 };
 
+
+export const getAllCriteria = async (req, res, next) => {
+    try {
+      const eventCriteria = await prisma.eventCriteria.findMany({
+        include: {
+          event: {
+            select: {
+              event_title: true,
+            },
+          },
+        },
+      });
+  
+      res.status(200).json({
+        message: 'Criteria retrieved successfully',
+        Criteria: eventCriteria, 
+    });
+    } catch (error) {
+      console.error('Error retrieving event criteria:', error);
+      return next(error);
+    }
+  };
+  
+  export const getEventCriteria = async (req, res, next) => {
+    const { eventId } = req.params;
+    try {
+      const eventCriteria = await prisma.eventCriteria.findMany({
+        where: { event_id: parseInt(eventId) }, 
+        include: {
+          event: {
+            select: {
+              event_title: true,
+            },
+          },
+        },
+      });
+  
+      // Map the criteria to include the desired fields
+      const response = eventCriteria.map(criteria => ({
+        criteria_id: criteria.criteria_id,
+        criteria_name: criteria.criteria_name,
+        max_score: criteria.max_score,
+        event_title: criteria.event.event_title, 
+      }));
+  
+      // Send a successful response back to the client
+      res.status(200).json({
+        message: 'Event criteria retrieved successfully',
+        criteria: response, 
+      });
+    } catch (error) {
+      console.error("Error fetching event criteria:", error);
+      next(error);
+    }
+  };
+  

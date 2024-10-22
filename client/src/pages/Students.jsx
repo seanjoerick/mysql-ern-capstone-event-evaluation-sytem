@@ -57,7 +57,7 @@ export default function Students() {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <span className="loading loading-spinner loading-lg"></span>
+            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
           </div>
         ) : (
           <>
