@@ -1,85 +1,191 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
-export default function Signup() {
+const SignUp = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [yearLevel, setYearLevel] = useState('');
+  const [course, setCourse] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Logic for sign up will go here
+  };
+
   return (
-    <div className="font-[sans-serif]">
-      {/* Header Section */}
-      <div className="text-center bg-gradient-to-r from-black to-gray-600 min-h-[160px] sm:p-6 p-4">
-        <img src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" alt="Trimex Logo" className="mx-auto mb-10 h-20" />
-      </div>
-
-      {/* Form Section */}
-      <div className="mx-4 mb-4 -mt-16">
-        <form className="max-w-4xl mx-auto bg-gray-50 shadow-[0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8 p-4 rounded-md mt-6">
-    
-          <h1 className="sm:text-1xl text-2xl font-bold text-black mb-6 text-center">Create an account</h1>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Username</label>
-              <input name="name" type="text" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" placeholder="Enter name" />
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Email Address</label>
-              <input name="email" type="text" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" placeholder="Enter email" />
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">First Name</label>
-              <input name="first_name" type="text" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" placeholder="Enter first name" />
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Last Name</label>
-              <input name="last_name" type="text" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" placeholder="Enter last name" />
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Year Level</label>
-              <select name="yearleveltype" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all">
-                <option value="" disabled selected>Select Year Level</option>
-                <option value="tesda">TESDA</option>
-                <option value="senior_high">Senior High</option>
-                <option value="college">College</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Course/Strand</label>
-              <select name="course_strand" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all">
-                <option value="" disabled selected>Select Course/Strand</option>
-                <option value="tesda">TESDA</option>
-                <option value="senior_high">Senior High</option>
-                <option value="college">College</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-gray-800 text-sm mb-2 block">Password</label>
-              <input name="password" type="password" className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" placeholder="Enter password" />
-            </div>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="card w-full max-w-2xl shadow-xl bg-base-100">
+        <div className="card-body">
+          <div className="text-center mb-6">
+            <img 
+              src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" 
+              alt="Trimex Logo" 
+              className="mx-auto h-20 w-auto"
+              style={{ height: '100px', width: '200px' }}
+            />
           </div>
+          <h3 className="text-3xl font-extrabold text-center">Sign Up</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              {/* Year Level / Type and Course/Strand Inputs */}
+              <div className="flex space-x-4">
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">Year Level / Type</span>
+                  </label>
+                  <select
+                    value={yearLevel}
+                    onChange={(e) => setYearLevel(e.target.value)}
+                    className="select select-bordered w-full"
+                    required
+                  >
+                    <option value="">Select Year Level</option>
+                    <option value="College">College</option>
+                    <option value="Senior">Senior</option>
+                    <option value="TESDA">TESDA</option>
+                  </select>
+                </div>
 
-          <div className="flex justify-between mt-8">
-            <div className="flex items-center">
-              <input id="terms" type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-800">I agree to the <a href="#" className="font-semibold">Terms of Service</a> and <a href="#" className="font-semibold">Privacy Policy</a></label>
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">Course/Strand</span>
+                  </label>
+                  <select
+                    value={course}
+                    onChange={(e) => setCourse(e.target.value)}
+                    className="select select-bordered w-full"
+                    required
+                  >
+                    <option value="">Select Course/Strand</option>
+                    <option value="Course 1">Course 1</option>
+                    <option value="Course 2">Course 2</option>
+                    <option value="Strand 1">Strand 1</option>
+                    <option value="Strand 2">Strand 2</option>
+                  </select>
+                </div>
+              </div>
+
+                {/* First Name and Last Name Inputs */}
+                <div className="flex space-x-4">
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">First Name</span>
+                  </label>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <FontAwesomeIcon icon={faUser} className="h-4 w-4 opacity-70" />
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="input grow w-full"
+                      placeholder="First Name"
+                      required
+                    />
+                  </label>
+                </div>
+
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">Last Name</span>
+                  </label>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <FontAwesomeIcon icon={faUser} className="h-4 w-4 opacity-70" />
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="input grow w-full"
+                      placeholder="Last Name"
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Username Input */}
+              <div className="flex">
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">Username</span>
+                  </label>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <FontAwesomeIcon icon={faUser} className="h-4 w-4 opacity-70" />
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="input grow w-full"
+                      placeholder="Username"
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Email Input */}
+              <div className="flex">
+                <div className="flex-1">
+                  <label className="label">
+                    <span className="label-text">Email</span>
+                  </label>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 opacity-70" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="input grow w-full"
+                      placeholder="Email"
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <label className="label">
+                  <span className="label-text">Password</span>
+                </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  <FontAwesomeIcon icon={faLock} className="h-4 w-4 opacity-70" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input grow w-full"
+                    placeholder="Password"
+                    required
+                  />
+                </label>
+              </div>
             </div>
-          </div>
 
-          {/* Primary Button */}
-          <button type="submit" className="w-full bg-gray-800 text-white text-sm font-semibold rounded-md px-6 py-3 mt-8 transition-all cursor-pointer hover:text-gray-400">
-            Create Account
-          </button>
+            <div className="mt-5">
+              <button
+                type="submit"
+                className="w-full py-3.5 flex items-center justify-center bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500"
+              >
+                Sign Up
+              </button>
+            </div>
 
-          <p className="mt-6 text-sm text-gray-600 text-center">
-             Already have an account? 
-            <Link to="/login" className="font-semibold text-blue-500"> Login</Link>
-          </p>
-        </form>
+            <p className="mt-3 text-center">
+              Already have an account?{' '}
+              <Link to="/login" className="link link-primary"> {/* Changed to Link component */}
+                Login here
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default SignUp;

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import useGetEvents from '../hooks/useGetEvents';
 import Manage from '../components/Manage';
-import toast from 'react-hot-toast';
 
 export default function EventList() {
   const { events, loading, error } = useGetEvents();
   const [searchTerm, setSearchTerm] = useState("");
-  const [showManageEvent, setShowManageEvent] = useState(false); 
-  const [selectedEvent, setSelectedEvent] = useState(null); 
+  const [showManageEvent, setShowManageEvent] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Filter events based on the search term
   const filteredEvents = events.filter(event =>
@@ -17,8 +16,8 @@ export default function EventList() {
 
   const handleManageClick = (event) => {
     console.log("Event ID:", event.event_id);
-    setSelectedEvent(event); 
-    setShowManageEvent(true); 
+    setSelectedEvent(event);
+    setShowManageEvent(true);
   };
 
   const handleBackToList = () => {
@@ -59,21 +58,26 @@ export default function EventList() {
             </div>
           </div>
 
+          {/* Display loading, error, or no events message here */}
+          {loading && (
+            <div className="flex justify-center items-center h-32">
+              <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
+            </div>
+          )}
+          {error && (
+            <div className="flex justify-center items-center h-32 text-red-500">
+              <p>{error}</p>
+            </div>
+          )}
+          {filteredEvents.length === 0 && !loading && !error && (
+            <div className="flex justify-center items-center h-32 text-gray-500">
+              <p>No events available.</p>
+            </div>
+          )}
+
           {/* Events Table */}
           <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
-            {loading ? (
-              <div className="flex justify-center items-center h-32">
-                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
-              </div>
-            ) : error ? (
-              <div className="flex justify-center items-center h-32 text-red-500">
-                <p>{error}</p>
-              </div>
-            ) : filteredEvents.length === 0 ? (
-              <div className="flex justify-center items-center h-32 text-gray-500">
-                <p>No events available.</p>
-              </div>
-            ) : (
+            {filteredEvents.length > 0 && (
               <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
@@ -92,21 +96,21 @@ export default function EventList() {
                       </th>
                       <td className="px-6 py-4">{event.event_description}</td>
                       <td className="px-6 py-4">
-                                        {new Date(event.created_at).toLocaleDateString(undefined, {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: true
-                                        })}
-                                    </td>
+                        {new Date(event.created_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </td>
                       <td className="px-6 py-4">
                         <span className={`font-medium 
-                          ${event.status === 'active' ? 'text-orange-500' : 
-                            event.status === 'ongoing' ? 'text-blue-500' : 
-                            event.status === 'completed' ? 'text-green-500' : 
-                            event.status === 'cancelled' ? 'text-red-500' : ''}`}>
+                          ${event.status === 'active' ? 'text-orange-500' :
+                            event.status === 'ongoing' ? 'text-blue-500' :
+                              event.status === 'completed' ? 'text-green-500' :
+                                event.status === 'cancelled' ? 'text-red-500' : ''}`}>
                           {event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}
                         </span>
                       </td>

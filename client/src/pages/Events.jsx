@@ -130,115 +130,126 @@ export default function Events() {
                 </div>
             </div>
 
-            {/* Events Table */}
-            <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
-                {loading ? (
-                    <div className="flex justify-center items-center h-32">
-                         <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
-                    </div>
-                ) : error ? (
-                    <div className="flex justify-center items-center h-32 text-red-500">
-                        <p>{error}</p>
-                    </div>
-                ) : filteredEvents.length === 0 ? (
-                    <div className="flex justify-center items-center h-32 text-gray-500">
-                        <p>No events available.</p>
-                    </div>
-                ) : (
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-4 w-1/4">Event Title</th>
-                                <th scope="col" className="px-6 py-4 w-1/4">Description</th>
-                                <th scope="col" className="px-6 py-4 w-1/4">Start Date</th>
-                                <th scope="col" className="px-6 py-4 w-1/4">End Date</th>
-                                <th scope='col' className='px-6 py-4 w-1/4'>Status</th>
-                                <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredEvents.map((event) => (
-                                <tr key={event.event_id} className="odd:bg-white even:bg-gray-50 border-b">
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900">
-                                        {event.event_title}
-                                    </th>
-                                    <td className="px-6 py-4">{event.event_description}</td>
-                                    <td className="px-6 py-4">
-                                        {new Date(event.start_date).toLocaleDateString(undefined, {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: true
-                                        })}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {new Date(event.end_date).toLocaleDateString(undefined, {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: true
-                                        })}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {/* Status Text with Color */}
-                                        <span className={`font-medium 
-                                            ${event.status === 'active' ? 'text-orange-500' : 
-                                                event.status === 'ongoing' ? 'text-blue-500' : 
-                                                event.status === 'completed' ? 'text-green-500' : 
-                                                event.status === 'cancelled' ? 'text-red-500' : ''}`}>
-                                            {event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 flex space-x-2">
-                                        <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
-                                            onClick={() => {
-                                                setSelectedEvent(event);
-                                                setShowEditEventModal(true);
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit } />
-                                        </button>
-                                        <button
-                                            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2"
-                                            onClick={() => {
-                                                setEventToDelete(event);
-                                                setShowDeleteModal(true);
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash } />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
+            {/* Loading, Error, and Empty State Messages */}
+            {loading && (
+                <div className="flex justify-center items-center h-32">
+                    <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
+                </div>
+            )}
+            {error && (
+                <div className="flex justify-center items-center h-32 text-red-500">
+                    <p>{error}</p>
+                </div>
+            )}
+            {filteredEvents.length === 0 && !loading && !error && (
+                <div className="flex justify-center items-center h-32 text-gray-500">
+                    <p>No events available.</p>
+                </div>
+            )}
             
-            {/* Add and Edit Event Modal */}
-            {showAddEventModal && <EventModal onAddEvent={handleAddEvent} onClose={() => setShowAddEventModal(false)} />}
-                
+      {/* Events Table */}
+      <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
+      {filteredEvents.length > 0 && (
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" className="px-6 py-4 w-1/4">Event Title</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Description</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Start Date</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">End Date</th>
+                    <th scope='col' className='px-6 py-4 w-1/4'>Status</th>
+                    <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {filteredEvents.map((event) => (
+                    <tr key={event.event_id} className="odd:bg-white even:bg-gray-50 border-b">
+                        <th scope="row" className="px-6 py-4 font-medium text-gray-900">
+                            {event.event_title}
+                        </th>
+                        <td className="px-6 py-4">{event.event_description}</td>
+                        <td className="px-6 py-4">
+                            {new Date(event.start_date).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })}
+                        </td>
+                        <td className="px-6 py-4">
+                            {new Date(event.end_date).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            })}
+                        </td>
+                        <td className="px-6 py-4">
+                            <span className={`font-medium 
+                                ${event.status === 'active' ? 'text-orange-500' : 
+                                    event.status === 'ongoing' ? 'text-blue-500' : 
+                                    event.status === 'completed' ? 'text-green-500' : 
+                                    event.status === 'cancelled' ? 'text-red-500' : ''}`}>
+                                {event.status.charAt(0).toUpperCase() + event.status.slice(1).toLowerCase()}
+                            </span>
+                        </td>
+                        <td className="px-6 py-4 flex space-x-2">
+                            <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
+                                onClick={() => {
+                                    setSelectedEvent(event);
+                                    setShowEditEventModal(true);
+                                }}>
+                                <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                            <button className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2"
+                                onClick={() => {
+                                    setEventToDelete(event);
+                                    setShowDeleteModal(true);
+                                }}>
+                                <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+      )}
+    </div>
+
+            {/* Modals */}
+            {showAddEventModal && (
+                <EventModal
+                    onClose={() => setShowAddEventModal(false)}
+                    onAddEvent={handleAddEvent}
+                    loading={loadingEvent}
+                />
+            )}
             {showEditEventModal && (
                 <EditEventModal
                     event={selectedEvent}
-                    onUpdateEvent={handleUpdateEvent}
                     onClose={() => setShowEditEventModal(false)}
+                    onUpdateEvent={handleUpdateEvent}
+                    loading={loadingEvent}
                 />
             )}
-
-            {/* Delete Event Confirmation */}
             {showDeleteModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-                        <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
-                        <p className="text-sm text-gray-600">Are you sure you want to delete this event?</p>
-                        <div className="mt-6 flex justify-end space-x-2">
-                            <button className="text-gray-600 hover:text-gray-900 font-medium" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-                            <button className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white shadow-md rounded-lg p-6">
+                        <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
+                        <p>Are you sure you want to delete the event titled "{eventToDelete?.event_title}"?</p>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                                onClick={() => setShowDeleteModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                                 onClick={handleDeleteEvent}
                             >
                                 Delete

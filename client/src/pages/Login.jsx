@@ -1,85 +1,123 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import useLogin from '../hooks/useLogin'; 
+import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock, faBell, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import useLogin from '../hooks/useLogin';
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { loading, login } = useLogin();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login({ email, password });
   };
 
+  const handleTermsRedirect = () => {
+    navigate('/terms');
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 font-[sans-serif]">
-      {/* Form Section */}
-      <div className="mx-4 mb-4">
-        <div className="text-center mb-6">
-          {/* Logo with wider width */}
-          <img 
-            src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" 
-            alt="Trimex Logo" 
-            className="mx-auto mb-4 h-20 w-auto"
-            style={{ height: '100px', width: '250px' }}
-          />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="card w-full max-w-md shadow-xl bg-base-100">
+        <div className="card-body">
+          {/* Logo Section */}
+          <div className="text-center mb-6">
+            <img 
+              src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" 
+              alt="Trimex Logo" 
+              className="mx-auto h-20 w-auto"
+              style={{ height: '100px', width: '200px' }}
+            />
+          </div>
+
+          <h3 className="text-3xl font-extrabold text-center">Login</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              {/* Username Input */}
+              <div>
+                <label className="label">
+                  <span className="label-text">Email Address</span>
+                </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 opacity-70" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="grow"
+                    placeholder="Email Address"
+                    required
+                  />
+                </label>
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <label className="label">
+                  <span className="label-text">Password</span>
+                </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  <FontAwesomeIcon icon={faLock} className="h-4 w-4 opacity-70" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="grow"
+                    placeholder="Password"
+                    required
+                  />
+                </label>
+              </div>
+            </div>
+            <p className="text-s text-gray-600 mt-2">
+              <Link to="/forgot-password" className="font-semibold text-blue-500 hover:underline">Forgot Password?</Link>
+            </p>
+            <div className="mt-5">
+              <button
+                type="submit"
+                className="w-full py-3.5 flex items-center justify-center bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500 disabled:bg-gray-400"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Logging in...
+                  </>
+                ) : (
+                  'Login'
+                )}
+              </button>
+            </div>
+
+            <p className="mt-3 text-center">
+              Don't have an account?{' '}
+              <button 
+                className="link link-primary" 
+                onClick={handleTermsRedirect}
+              >
+                Sign up here
+              </button>
+            </p>
+          </form>
+
+          {/* Centered Icon Section */}
+          <div className="card-body text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faBell} className="h-7 w-7 text-gray-600" />
+                <span className="ml-2 text-gray-800">Stay updated with events!</span>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-gray-50 shadow-[0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8 p-4 rounded-md">
-          <h1 className="sm:text-1xl text-2xl font-bold text-black mb-6 text-center">Sign in to your account</h1>
-          <div className="mb-6">
-            <label className="text-gray-800 text-sm mb-2 block">Email Address</label>
-            <input 
-              name="email" 
-              type="email" 
-              className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" 
-              placeholder="Enter email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} // Update email state
-              required 
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="text-gray-800 text-sm mb-2 block">Password</label>
-            <input 
-              name="password" 
-              type="password" 
-              className="bg-gray-100 focus:bg-transparent w-full text-sm text-gray-800 px-4 py-3 rounded-md outline-blue-500 transition-all" 
-              placeholder="Enter password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)} // Update password state
-              required 
-            />
-          </div>
-          {/* Forgot Password Link Above Password Input */}
-          <p className="text-sm text-gray-600 mb-2">
-            <Link to="/forgot-password" className="font-semibold text-blue-500">Forgot Password?</Link>
-          </p>
-          {/* Primary Button */}
-          <button 
-            type="submit" 
-            className="w-full bg-gray-800 text-white text-sm font-semibold rounded-md px-6 py-3 mt-4 transition-all cursor-pointer hover:text-gray-400 flex items-center justify-center"
-            disabled={loading} // Disable button while loading
-          >
-            {loading ? (
-              <>
-                <span className="loading loading-spinner loading-sm mr-2"></span> {/* DaisyUI spinner */}
-                Logging in...
-              </>
-            ) : (
-              'Login'
-            )}
-          </button>
-
-          {/* Sign Up Link */}
-          <p className="mt-6 text-sm text-gray-600 text-center">
-            Don't have an account? 
-            <Link to="/signup" className="font-semibold text-blue-500"> Sign up</Link>
-          </p>
-        </form>
       </div>
     </div>
   );
-}
+};
+
+export default Login;

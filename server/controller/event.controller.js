@@ -74,16 +74,10 @@ export const createEvent = async (req, res, next) => {
     }
 };
 
-
 export const getAllEvent = async (req, res, next) => {
     try {
         // Fetch all events from the database
         const events = await prisma.event.findMany();
-
-        // If no events were found, return a 404 response
-        if (events.length === 0) {
-            return res.status(404).json({ message: 'No Events found' });
-        }
 
         // Create an array to hold events with admin usernames, excluding admin_id
         const eventsWithAdmin = await Promise.all(
@@ -103,12 +97,11 @@ export const getAllEvent = async (req, res, next) => {
                 };
             })
         );
-        
-        const eventCount = events.length;
 
+        // Return response with events, including count even if empty
         return res.status(200).json({
             message: 'Events retrieved successfully',
-            count:  eventCount,
+            count: events.length,
             events: eventsWithAdmin,
         });
     } catch (error) {
@@ -240,9 +233,21 @@ export const createEventCriteria = async (req, res, next) => {
         });
 
         if (existingCriteria) {
-            return res.status(400).json({ error: `Criteria ${criteria_name} already exists!` });
+            return res.status(400).json({ error: `${criteria_name} already exists!` });
         }
-        
+
+        // Count the existing criteria for the event
+        const criteriaCount = await prisma.eventCriteria.count({
+            where: {
+                event_id: parseInt(eventId),
+            },
+        });
+
+        // Ensure no more than 10 criteria exist for the event
+        if (criteriaCount >= 10) {
+            return res.status(400).json({ error: 'Cannot create more than 10 criteria for this event!' });
+        }
+
         // Create new event criteria
         const newCriteria = await prisma.eventCriteria.create({
             data: {
@@ -253,7 +258,7 @@ export const createEventCriteria = async (req, res, next) => {
         });
 
         return res.status(201).json({
-            message: `Event criteria ${criteria_name} created successfully`,
+            message: `${criteria_name} created successfully`,
             criteria: {
                 id: newCriteria.criteria_id,
                 name: newCriteria.criteria_name,
@@ -266,6 +271,7 @@ export const createEventCriteria = async (req, res, next) => {
         next(error);
     }
 };
+
 
 export const updateCriteria = async (req, res, next) => {
     const { criteria_name, max_score } = req.body;
@@ -362,7 +368,7 @@ export const deleteCriteria = async (req, res, next) => {
         });
 
         return res.status(200).json({
-            message: `Criteria ${existingCriteria.criteria_name} deleted successfully.`,
+            message: `${existingCriteria.criteria_name} deleted successfully.`,
         });
     } catch (error) {
         console.error('Error deleting criteria:', error);

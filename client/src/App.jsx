@@ -12,6 +12,7 @@ import Students from './pages/Students';
 import Admin from './pages/AdminAccounts';
 import Settings from './pages/Settings';
 import EventList from './pages/EventList';
+import Terms from './components/Terms'; 
 
 const App = () => {
   const { authUser } = useAuthContext();
@@ -23,6 +24,7 @@ const App = () => {
         {/* Public routes */}
         <Route path='/login' element={authUser ? <Navigate to='/' /> : <Login />} />
         <Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp />} />
+        <Route path='/terms' element={<Terms />} />
         
         {/* Protected routes that include the Sidebar */}
         {authUser && (
@@ -32,9 +34,9 @@ const App = () => {
             <Route path='events' element={<Events />} />
             <Route path='reports' element={<Reports />} />
             <Route path='students' element={<Students />} />
-            <Route path='admins' element={<Admin/>} /> 
-            <Route path='criteria' element={<EventList/>} /> 
-            <Route path='settings' element={<Settings/>} /> 
+            <Route path='admins' element={<Admin />} />
+            <Route path='criteria' element={<EventList />} /> 
+            <Route path='settings' element={<Settings />} /> 
             {/* Add other protected routes here */}
           </Route>
         )}
@@ -46,4 +48,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;
