@@ -3,72 +3,88 @@ import bcryptjs from 'bcryptjs';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
 
 export const signup = async (req, res, next) => {
-  const { username, email, password, firstName, lastName, yearLevelId, strandId, courseId, tesdaCourseId } = req.body;
+  const {
+      username,
+      email,
+      password,
+      firstName,
+      lastName,
+      yearLevelType,
+      strandId,
+      courseId,
+      tesdaCourseId,
+  } = req.body;
 
   try {
       // Check if the user already exists
-      const existingUser  = await prisma.user.findFirst({
+      const existingUser = await prisma.user.findFirst({
           where: {
               OR: [
                   { username: username },
-                  { email: email }
-              ]
-          }
+                  { email: email },
+              ],
+          },
       });
 
-      if (existingUser ) return res.status(400).json({ error: 'User  already exists!' });
-      
+      if (existingUser) {
+          return res.status(400).json({ error: 'User already exists!' });
+      }
+
       // Hash the password
       const salt = bcryptjs.genSaltSync(10);
       const hashedPassword = bcryptjs.hashSync(password, salt);
 
       // Create user in tbl_users
-      const userPromise = prisma.user.create({
+      const user = await prisma.user.create({
           data: {
               username: username,
               password: hashedPassword,
               email: email,
               role: 'student',
-          }
+          },
       });
 
-      // Prepare data for student creation
+      // Prepare data for student creation with type conversion
       const studentData = {
           first_name: firstName,
           last_name: lastName,
-          year_level_id: yearLevelId,
-          strand_id: strandId || null,
-          course_id: courseId || null,
-          tesda_course_id: tesdaCourseId || null
+          year_level_type: yearLevelType,
+          strand_id: strandId ? parseInt(strandId, 10) : null,
+          course_id: courseId ? parseInt(courseId, 10) : null,
+          tesda_course_id: tesdaCourseId ? parseInt(tesdaCourseId, 10) : null,
       };
 
-      // Use Promise.all to create user and student concurrently
-      const [user, student] = await Promise.all([
-          userPromise,
-          userPromise.then(user => prisma.student.create({
-              data: {
-                  user_id: user.user_id,
-                  ...studentData
-              }
-          }))
-      ]);
+      // Create student using the user_id from the created user
+      const student = await prisma.student.create({
+          data: {
+              user_id: user.user_id,
+              ...studentData,
+          },
+      });
 
       // Generate JWT token and set cookie
       await generateTokenAndSetCookie(user.user_id, user.role, res);
 
-      // Send response
-      res.status(201).json({
-          success: true,
-          message: 'User  created successfully!',
-          userId: user.user_id,
-          studentId: student.student_id
-      });
+      const fullName = `${firstName} ${lastName}`;
 
+       // Send response with additional user information
+       res.status(201).json({
+        success: true,
+        message: 'User created successfully!',
+        username: user.username,
+        fullName: fullName,
+        email: user.email,
+        role: user.role,
+    });
   } catch (error) {
       console.error('Error during signup:', error);
-      next(error);
+      // Prevent sending multiple responses
+      if (!res.headersSent) {
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
   }
 };
+
 
 // Log in an existing user
 export const login = async (req, res, next) => {

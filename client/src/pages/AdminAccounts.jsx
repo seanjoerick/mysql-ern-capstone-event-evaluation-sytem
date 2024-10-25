@@ -7,7 +7,7 @@ import EditAdminModal from '../components/AdminEditModal';
 import { toast } from 'react-hot-toast';
 
 export default function AdminAccounts() {
-  const { admins, setAdmins, loading } = useGetAdmins();
+  const { admins, setAdmins, loading, error } = useGetAdmins();
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
   const [showEditAccountModal, setShowEditAccountModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -67,6 +67,8 @@ export default function AdminAccounts() {
     }
   };
 
+
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
@@ -80,43 +82,50 @@ export default function AdminAccounts() {
         </button>
       </div>
 
-      {/* Accounts Table */}
-      <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
-        {loading ? (
-          <div className="flex justify-center items-center h-32">
+      {loading && (
+        <div className="flex justify-center items-center h-32">
             <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
-          </div>
-        ) : (
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-4 w-1/4">Username</th>
-                <th scope="col" className="px-6 py-4 w-1/4">Email Address</th>
-                <th scope="col" className="px-6 py-4 w-1/4">Role</th>
-                <th scope="col" className="px-6 py-4 w-1/4">Created</th>
-                <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admins.map((admin, index) => (
-                <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
-                  <th scope="row" className="px-6 py-4 font-medium text-gray-900">
-                    {admin.username}
-                  </th>
-                  <td className="px-6 py-4">{admin.email}</td>
-                  <td className="px-6 py-4">{admin.role.charAt(0).toUpperCase() + admin.role.slice(1)}</td>
-                  <td className="px-6 py-4">
-                    {new Date(admin.created_at).toLocaleDateString(undefined, {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true,
-                    })}
-                  </td>
-                  <td className="px-6 py-4 flex space-x-2">
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center h-32 text-red-500">
+            <p>{error}</p>
+        </div>
+      )}
+      {admins.length === 0 && !loading && !error && (
+        <div className="flex justify-center items-center h-32 text-gray-500">
+          <p>No admin available.</p>
+        </div>
+      )}
+
+
+        {/* Accounts Table */}
+        <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
+      {admins.length > 0 && (
+         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-4 w-1/4">Username</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Email Address</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Created</th>
+                    <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {admins.map((admin, index) => (
+                    <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
+                      <th scope="row" className="px-6 py-4 font-medium text-gray-900">
+                        {admin.username}
+                      </th>
+                      <td className="px-6 py-4">{admin.email}</td>
+                      <td className="px-6 py-4">
+                        {new Date(admin.created_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </td>
+                      <td className="px-6 py-4 flex space-x-2">
                     <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
                       onClick={() => {
                         setSelectedAdmin(admin);
@@ -126,11 +135,11 @@ export default function AdminAccounts() {
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
                   </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+      )}
       </div>
 
       {/* Add Account Modal */}

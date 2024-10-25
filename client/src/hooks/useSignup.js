@@ -6,13 +6,13 @@ const useSignup = () => {
     const [loading, setLoading] = useState(false);
     const  { setAuthUser } = useAuthContext();
 
-    const signup = async ({ username, email, password, firstName, lastName, yearLevelId, strandId, courseId, tesdaCourseId }) => {
+    const signup = async ({ username, email, password, firstName, lastName, yearLevelType, strandId, courseId, tesdaCourseId }) => {
         setLoading(true);
         try {
             const res = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password, firstName, lastName, yearLevelId, strandId, courseId, tesdaCourseId}),
+                body: JSON.stringify({ username, email, password, firstName, lastName, yearLevelType, strandId, courseId, tesdaCourseId}),
             });
             
             const data = await res.json();

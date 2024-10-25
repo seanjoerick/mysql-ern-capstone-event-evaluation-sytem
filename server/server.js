@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './utils/errorHandler.js';
 import prisma from './prismaClient.js';
 import authRoutes from './routes/auth.route.js';
-import yearRoutes from './routes/year.route.js';
 import courseRoutes from './routes/course.route.js';
 import userRoutes from './routes/user.route.js';
 import eventRoutes from './routes/event.route.js';
@@ -20,7 +19,6 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/year', yearRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/event', eventRoutes);

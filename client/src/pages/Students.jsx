@@ -40,27 +40,33 @@ export default function Students() {
         </div>
       </div>
 
+      {loading && (
+        <div className="flex justify-center items-center h-32">
+            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center h-32 text-red-500">
+            <p>{error}</p>
+        </div>
+      )}
+      {filteredStudents.length === 0 && !loading && !error && (
+        <div className="flex justify-center items-center h-32 text-gray-500">
+          <p>No students available.</p>
+        </div>
+      )}
+
       {/* Accounts Table */}
       <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar"> {/* Increased max height for more rows */}
-        {loading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
-          </div>
-        ) : (
-          <>
-            {filteredStudents.length === 0 ? (
-              <div className="flex justify-center items-center h-32">
-                <span className="text-gray-500">No students available</span>
-              </div>
-            ) : (
-              <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+      {filteredStudents.length > 0 && (
+         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-4 w-1/4">Username</th>
                     <th scope="col" className="px-6 py-4 w-1/4">Email Address</th>
                     <th scope="col" className="px-6 py-4 w-1/4">Full Name</th>
-                    <th scope="col" className="px-6 py-4 w-1/4">Tesda/Course</th>
-                    <th scope="col" className="px-6 py-4 w-1/4">Role</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Year Level</th>
+                    <th scope="col" className="px-6 py-4 w-1/5">Strand/Course</th>
                     <th scope="col" className="px-6 py-4 w-1/4">Created</th>
                   </tr>
                 </thead>
@@ -75,10 +81,18 @@ export default function Students() {
                         {`${student.first_name} ${student.last_name}`}
                       </td>
                       <td className="px-6 py-4">
-                        {student.TesdaCourse?.course_name || student.Course?.course_name || student.Strand?.strand_name || 'N/A'}
+                        {student.year_level_type
+                        .replace(/_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join(' ')}
                       </td>
                       <td className="px-6 py-4">
-                        {student?.User.role.charAt(0).toUpperCase() + student?.User.role.slice(1)}
+                      {student.Course?.course_name?.startsWith('Bachelor of Science in') 
+                    ? `BS in ${student.Course.course_name.split('Bachelor of Science in ')[1]?.split('-')[0].trim()}` 
+                    : student.TesdaCourse?.course_name || 
+                      student.Strand?.strand_name || 
+                      'N/A'}
                       </td>
                       <td className="px-6 py-4">
                         {new Date(student?.User.created_at).toLocaleDateString(undefined, {
@@ -91,9 +105,7 @@ export default function Students() {
                   ))}
                 </tbody>
               </table>
-            )}
-          </>
-        )}
+      )}
       </div>
     </div>
   );

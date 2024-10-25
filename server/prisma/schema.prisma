@@ -21,17 +21,16 @@ model User {
 }
 
 model Student {
-  student_id         Int       @id @default(autoincrement())
+  student_id         Int              @id @default(autoincrement())
   user_id            Int
   first_name         String
   last_name          String
-  year_level_id      Int
+  year_level_type    YearLevelTypeEnum // Use enum instead of year_level_id
   strand_id          Int?
   course_id          Int?
   tesda_course_id    Int?
 
   User               User            @relation(fields: [user_id], references: [user_id]) // Many-to-one relationship with User
-  YearLevelType     YearLevelType   @relation(fields: [year_level_id], references: [year_level_id]) // Many-to-one relationship with YearLevelType
   Strand            Strand?         @relation(fields: [strand_id], references: [strand_id]) // Many-to-one relationship with Strand (optional)
   Course            Course?         @relation(fields: [course_id], references: [course_id]) // Many-to-one relationship with Course (optional)
   TesdaCourse       TesdaCourse?    @relation(fields: [tesda_course_id], references: [tesda_course_id]) // Many-to-one relationship with TesdaCourse (optional)
@@ -94,15 +93,6 @@ model EvaluationDetail {
   @@map("tbl_evaluation_details")
 }
 
-model YearLevelType {
-  year_level_id   Int      @id @default(autoincrement())
-  year_level_type String
-
-  students        Student[] // Establishes a one-to-many relationship with Student
-
-  @@map("tbl_year_level_type")
-}
-
 model Strand {
   strand_id     Int      @id @default(autoincrement())
   strand_name   String
@@ -140,4 +130,10 @@ enum EventStatus {
   ongoing
   completed
   cancelled
+}
+
+enum YearLevelTypeEnum { // Define the enum for year levels
+  COLLEGE
+  TESDA
+  SENIOR_HIGH
 }

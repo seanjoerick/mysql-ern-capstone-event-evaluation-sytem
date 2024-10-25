@@ -162,52 +162,96 @@ export const getAllAdmins = async (req, res, next) => {
   }
 };
 
+// export const getAllStudents = async (req, res, next) => {
+//     try {
+//         const students = await prisma.student.findMany({
+//             include: {
+//                 User: {
+//                     select: {
+//                         username: true,
+//                         email: true,
+//                         role: true,
+//                         created_at: true,
+//                     },
+//                 },
+//                 Strand: {
+//                     select: {
+//                         strand_name: true,
+//                     },
+//                 },
+//                 Course: {
+//                     select: {
+//                         course_name: true,
+//                     },
+//                 },
+//                 TesdaCourse: {
+//                     select: {
+//                         course_name: true,
+//                     },
+//                 },
+//             },
+//         });
+
+//         const studentCount = students.length;
+
+//         res.status(200).json({
+//             success: true,
+//             message: 'Students retrieved successfully!',
+//             count: studentCount,
+//             students: students,
+//         });
+//     } catch (error) {
+//         console.error('Error fetching students:', error);
+//         next(error);
+//     }
+// };
+
 export const getAllStudents = async (req, res, next) => {
     try {
-      const students = await prisma.student.findMany({
-        include: {
-          User: {
-            select: {
-              username: true,
-              email: true,
-              role: true,
-              created_at: true,
+        const students = await prisma.student.findMany({
+            include: {
+                User: {
+                    select: {
+                        username: true,
+                        email: true,
+                        role: true,
+                        created_at: true,
+                    },
+                },
+                Strand: {
+                    select: {
+                        strand_name: true,
+                    },
+                },
+                Course: {
+                    select: {
+                        course_name: true,
+                    },
+                },
+                TesdaCourse: {
+                    select: {
+                        course_name: true,
+                    },
+                },
             },
-          },
-          YearLevelType: {
-            select: {
-              year_level_type: true,
-            },
-          },
-          Strand: {
-            select: {
-              strand_name: true,
-            },
-          },
-          Course: {
-            select: {
-              course_name: true,
-            },
-          },
-          TesdaCourse: {
-            select: {
-              course_name: true,
-            },
-          },
-        },
-      });
-      
-      const  studentCount = students.length;
+        });
 
-       res.status(200).json({
-        success: true,
-        message: 'Students retrieved successfully!',
-        count: studentCount,
-        students: students,
-    });
+        // Add year level type to the response
+        const formattedStudents = students.map(student => ({
+            ...student,
+            year_level_type: student.year_level_type,
+        }));
+
+        const studentCount = formattedStudents.length;
+
+        res.status(200).json({
+            success: true,
+            message: 'Students retrieved successfully!',
+            count: studentCount,
+            students: formattedStudents,
+        });
     } catch (error) {
         console.error('Error fetching students:', error);
         next(error);
     }
-  };
-  
+};

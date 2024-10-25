@@ -5,7 +5,8 @@ const Terms = () => {
   const navigate = useNavigate(); 
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleAccept = () => {
+  const handleAccept = (e) => {
+    e.preventDefault();
     if (isChecked) {
       navigate('/signup'); 
     }
@@ -55,21 +56,25 @@ const Terms = () => {
             <label htmlFor="accept-terms">I have read and accept the terms and conditions.</label>
           </div>
 
-          <div className="flex justify-end mt-4">
-            <button 
-              onClick={handleCancel} 
-              className="btn btn-secondary border border-gray-300 bg-white text-gray-800 hover:bg-gray-200 mr-2"
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={handleAccept} 
-              disabled={!isChecked} 
-              className={`btn ${isChecked ? 'btn-primary border border-gray-700 bg-gray-700 text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
-            >
-             Accept
-            </button>
-          </div>
+          {/* Form to prevent submission issues */}
+          <form onSubmit={handleAccept}>
+            <div className="flex justify-end mt-4">
+              <button 
+                type="button" // Change to type "button"
+                onClick={handleCancel} 
+                className="btn border-gray-300 bg-white text-gray-800 hover:bg-gray-500 mr-2"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                disabled={!isChecked} 
+                className={`btn ${isChecked ? 'border-gray-700 bg-gray-700 text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
+              >
+                Accept
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
