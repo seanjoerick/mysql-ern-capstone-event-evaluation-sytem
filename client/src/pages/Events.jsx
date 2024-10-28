@@ -156,7 +156,7 @@ export default function Events() {
                     <th scope="col" className="px-6 py-4 w-1/4">Event Title</th>
                     <th scope="col" className="px-6 py-4 w-1/4">Description</th>
                     <th scope="col" className="px-6 py-4 w-1/4">Start Date</th>
-                    <th scope="col" className="px-6 py-4 w-1/4">End Date</th>
+                    <th scope="col" className="px-6 py-4 w-1/4">Date Finished</th>
                     <th scope='col' className='px-6 py-4 w-1/4'>Status</th>
                     <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
                 </tr>

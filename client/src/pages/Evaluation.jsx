@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import useGetEvents from '../hooks/useGetEvents';
 import Manage from '../components/Manage';
+import ViewFeedback from '../components/ViewFeedback';
 
 export default function Evaluation() {
   const { events, loading, error } = useGetEvents();
   const [searchTerm, setSearchTerm] = useState("");
   const [showManageEvent, setShowManageEvent] = useState(false);
+  const [showViewFeedback, setShowViewFeedback] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Filter events based on the search term
@@ -15,20 +17,29 @@ export default function Evaluation() {
   );
 
   const handleManageClick = (event) => {
-    console.log("Event ID:", event.event_id);
     setSelectedEvent(event);
     setShowManageEvent(true);
+    setShowViewFeedback(false);
+  };
+
+  const handleViewFeedbackClick = (event) => {
+    setSelectedEvent(event);
+    setShowViewFeedback(true);
+    setShowManageEvent(false);
   };
 
   const handleBackToList = () => {
     setShowManageEvent(false);
+    setShowViewFeedback(false);
     setSelectedEvent(null);
   };
 
   return (
     <div className="p-6">
-      {showManageEvent ? ( // Conditional rendering based on state
-        <Manage event={selectedEvent} onBack={handleBackToList} /> // Pass the selected event and back function
+      {showManageEvent ? (
+        <Manage event={selectedEvent} onBack={handleBackToList} />
+      ) : showViewFeedback ? (
+        <ViewFeedback event={selectedEvent} onBack={handleBackToList} />
       ) : (
         <div>
           <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
@@ -58,7 +69,6 @@ export default function Evaluation() {
             </div>
           </div>
 
-          {/* Display loading, error, or no events message here */}
           {loading && (
             <div className="flex justify-center items-center h-32">
               <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
@@ -75,7 +85,6 @@ export default function Evaluation() {
             </div>
           )}
 
-          {/* Events Table */}
           <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
             {filteredEvents.length > 0 && (
               <table className="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -83,7 +92,8 @@ export default function Evaluation() {
                   <tr>
                     <th className="px-6 py-4 w-1/5">Event Title</th>
                     <th className="px-6 py-4 w-1/5">Description</th>
-                    <th className="px-6 py-4 w-1/5">Created date</th>
+                    <th className="px-6 py-4 w-1/5">Start date</th>
+                    <th className="px-6 py-4 w-1/5">Date Finished</th>
                     <th className="px-6 py-4 w-1/5">Status</th>
                     <th className="px-6 py-4 w-1/5">Actions</th>
                   </tr>
@@ -106,6 +116,16 @@ export default function Evaluation() {
                         })}
                       </td>
                       <td className="px-6 py-4">
+                        {new Date(event.end_date).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </td>
+                      <td className="px-6 py-4">
                         <span className={`font-medium 
                           ${event.status === 'active' ? 'text-orange-500' :
                             event.status === 'ongoing' ? 'text-blue-500' :
@@ -117,19 +137,19 @@ export default function Evaluation() {
                       <td className="px-6 py-4 flex space-x-2">
                         <button
                           className="w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={() => handleManageClick(event)} // Show manage view and pass event
+                          onClick={() => handleManageClick(event)}
                         >
                           Manage
                         </button>
                         <button
                           className="w-32 text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={() => handleManageClick(event)} // Show manage view and pass event
+                          onClick={() => handleViewFeedbackClick(event)}
                         >
                           View Feedback
                         </button>
                         <button
                           className="w-32 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={() => handleManageClick(event)} // Show manage view and pass event
+                          onClick={() => handleManageClick(event)}
                         >
                           View Results
                         </button>

@@ -430,7 +430,6 @@ export const getEventCriteria = async (req, res, next) => {
     }
   };
   
-
 export const submitEvaluation = async (req, res) => {
     const { eventId, scores, feedbackText } = req.body;
     const userId = req.user.id;
@@ -512,5 +511,110 @@ export const getSubmittedEvaluations = async (req, res) => {
     } catch (error) {
       console.error('Error fetching submitted evaluations:', error);
       res.status(500).json({ message: 'Internal server error.' });
+    }
+};
+
+export const getEventFeedback = async (req, res, next) => {
+    const { eventId } = req.params;
+    try {
+      const feedback = await prisma.evaluation.findMany({
+        where: { event_id: parseInt(eventId) },
+        select: {
+          feedback_text: true,
+        },
+      });
+  
+      // Filter to only include non-null feedback
+      const filteredFeedback = feedback
+        .map((evaluation) => evaluation.feedback_text)
+        .filter(Boolean);
+  
+      res.status(200).json({
+        message: 'Event feedback retrieved successfully',
+        feedback: filteredFeedback,
+      });
+    } catch (error) {
+      console.error("Error fetching event feedback:", error);
+      next(error);
+    }
+  };
+
+  export const getEvaluationResults = async (req, res, next) => {
+    const { eventId } = req.params;
+
+    try {
+        const evaluations = await prisma.evaluation.findMany({
+            where: { event_id: parseInt(eventId) },
+            include: {
+                details: {
+                    include: {
+                        criteria: true,
+                    },
+                },
+            },
+        });
+
+        const criteriaScores = {};
+        let totalScore = 0;
+        let totalCount = 0;
+
+        evaluations.forEach(evaluation => {
+            evaluation.details.forEach(detail => {
+                const { criteria } = detail;
+                if (!criteriaScores[criteria.criteria_name]) {
+                    criteriaScores[criteria.criteria_name] = {
+                        totalScore: 0,
+                        count: 0,
+                        individualScores: [],
+                    };
+                }
+
+                criteriaScores[criteria.criteria_name].totalScore += detail.score;
+                criteriaScores[criteria.criteria_name].count += 1;
+                criteriaScores[criteria.criteria_name].individualScores.push(detail.score);
+            });
+
+            // Calculate total score for overall average
+            totalScore += evaluation.details.reduce((sum, detail) => sum + detail.score, 0);
+            totalCount += evaluation.details.length;
+        });
+
+        // Calculate averages
+        const result = Object.keys(criteriaScores).map(key => ({
+            criteria_name: key,
+            average_score: criteriaScores[key].totalScore / criteriaScores[key].count,
+            individual_scores: criteriaScores[key].individualScores,
+        }));
+
+        const overallAverageScore = totalCount > 0 ? totalScore / totalCount : null;
+
+        // Convert numeric score to descriptive rating, only if overallAverageScore is not null
+        const ratingDescription = overallAverageScore !== null ? getRatingDescription(overallAverageScore) : null;
+
+        // Send a successful response back to the client
+        res.status(200).json({
+            message: 'Event evaluation results retrieved successfully',
+            criteria: result,
+            overall_average_score: overallAverageScore,
+            rating: ratingDescription,
+        });
+    } catch (error) {
+        console.error("Error fetching evaluation results:", error);
+        next(error);
+    }
+};
+
+// Helper function to convert score to rating description
+const getRatingDescription = (score) => {
+    if (score >= 4.5) {
+        return 'Excellent';
+    } else if (score >= 3.5) {
+        return 'Good';
+    } else if (score >= 2.5) {
+        return 'Fair';
+    } else if (score >= 1.5) {
+        return 'Poor';
+    } else {
+        return 'Very Poor';
     }
 };
