@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useGetEvents from '../hooks/useGetEvents';
 import Manage from '../components/Manage';
 
-export default function EventList() {
+export default function Evaluation() {
   const { events, loading, error } = useGetEvents();
   const [searchTerm, setSearchTerm] = useState("");
   const [showManageEvent, setShowManageEvent] = useState(false);
@@ -32,7 +32,7 @@ export default function EventList() {
       ) : (
         <div>
           <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
-            <h2 className="text-2xl font-bold">Events</h2>
+            <h2 className="text-2xl font-bold">Event Evaluation</h2>
             <div className="flex items-center">
               <label className="input input-bordered flex items-center gap-2 mr-4">
                 <input

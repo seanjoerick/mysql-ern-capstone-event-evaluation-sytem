@@ -69,14 +69,15 @@ model EventCriteria {
 }
 
 model Evaluation {
-  evaluation_id Int       @id @default(autoincrement())
-  event_id      Int
-  student_id    Int
+  evaluation_id    Int        @id @default(autoincrement())
+  event_id         Int
+  student_id       Int
+  feedback_text    String?    // Optional feedback text from the student
 
-  event         Event     @relation(fields: [event_id], references: [event_id]) // Many-to-one relationship with Event
-  student       Student   @relation(fields: [student_id], references: [student_id]) // Many-to-one relationship with Student
+  event            Event      @relation(fields: [event_id], references: [event_id]) // Many-to-one relationship with Event
+  student          Student    @relation(fields: [student_id], references: [student_id]) // Many-to-one relationship with Student
 
-  details       EvaluationDetail[] // Establishes a one-to-many relationship with EvaluationDetail
+  details          EvaluationDetail[] // Establishes a one-to-many relationship with EvaluationDetail
 
   @@map("tbl_evaluations")
 }

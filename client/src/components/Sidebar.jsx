@@ -105,7 +105,7 @@ const Sidebar = () => {
                     to="/criteria"
                     className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-2 transition-all ${isActive('/criteria') ? 'text-blue-600' : ''}`}
                   >
-                    <span>Event List</span>
+                    <span>Evaluation</span>
                   </Link>
                 </li>
               </ul>

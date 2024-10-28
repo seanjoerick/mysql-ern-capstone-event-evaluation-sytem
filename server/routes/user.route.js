@@ -4,9 +4,9 @@ import { admin, getAllAdmins, getAllStudents, updateAdmin } from '../controller/
 const router = express.Router();
 
 //Admin
-router.post('/create', isVerifyToken, isAdmin, admin);
-router.put('/update/:adminId', isVerifyToken, isAdmin, updateAdmin);
-router.get('/all', isVerifyToken, isAdmin, getAllAdmins);
+router.post('/create', isVerifyToken, admin);
+router.put('/update/:adminId', isVerifyToken, updateAdmin);
+router.get('/all', isVerifyToken, getAllAdmins);
 router.get('/students/all', getAllStudents);
 
 export default router;

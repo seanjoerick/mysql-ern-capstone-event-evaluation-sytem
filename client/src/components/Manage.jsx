@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faPaperPlane, faArrowLeft, } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import useEventCriteria from '../hooks/useEventCriteria'; 
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -9,7 +9,7 @@ const Manage = ({ event, onBack }) => {
   const { criteria, loading, error, setCriteria } = useEventCriteria(event_id); 
   const [newCriteria, setNewCriteria] = useState({
     criteria_name: '',
-    max_score: 10,
+    max_score: 5,
   });
   const [selectedCriteria, setSelectedCriteria] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,22 +40,19 @@ const Manage = ({ event, onBack }) => {
           },
         ]);
   
-        setNewCriteria({ criteria_name: '', max_score: 10 });
+        setNewCriteria({ criteria_name: '', max_score: 5 });s
         toggleModal();
       } else {
-        // Display the error message from the backend
         toast.error(data.error || 'An error occurred while adding criteria.'); 
-        setNewCriteria({ criteria_name: '', max_score: 10 });
+        setNewCriteria({ criteria_name: '', max_score: 5 });
         toggleModal();
       }
     } catch (err) {
       console.error(err);
-      toast.error('Failed to add criteria.'); 
       toggleModal();
     }
   };
   
- 
   const handleEditCriteria = async () => {
     try {
       const response = await fetch(`/api/event/criteria/update/${selectedCriteria.criteria_id}`, {
@@ -66,13 +63,14 @@ const Manage = ({ event, onBack }) => {
         body: JSON.stringify(selectedCriteria),
       });
   
+      const data = await response.json();
+  
       if (response.ok) {
-        const updatedCriteria = await response.json();
-    
+        // Update the criteria in the state based on the response
         setCriteria(prev => 
           prev.map(criteria => 
-            criteria.criteria_id === updatedCriteria.criteria_id 
-              ? { ...criteria, criteria_name: updatedCriteria.criteria_name, max_score: updatedCriteria.max_score }
+            criteria.criteria_id === data.criteria.criteria_id 
+              ? { ...criteria, criteria_name: data.criteria.criteria_name, max_score: data.criteria.max_score }
               : criteria
           )
         );
@@ -82,7 +80,7 @@ const Manage = ({ event, onBack }) => {
         setIsEditMode(false);
         toggleModal();
       } else {
-        toast.error('Failed to update criteria.');
+        toast.error(data.error || 'Failed to update criteria.');
       }
     } catch (err) {
       console.error(err);
@@ -111,7 +109,7 @@ const Manage = ({ event, onBack }) => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
     if (isModalOpen) {
-      setNewCriteria({ criteria_name: '', max_score: 10 });
+      setNewCriteria({ criteria_name: '', max_score: 5 });
       setSelectedCriteria(null);
       setIsEditMode(false);
     }
@@ -168,7 +166,7 @@ const Manage = ({ event, onBack }) => {
               value={isEditMode ? selectedCriteria.max_score : newCriteria.max_score}
               onChange={(e) => isEditMode ? setSelectedCriteria({ ...selectedCriteria, max_score: parseInt(e.target.value) }) : setNewCriteria({ ...newCriteria, max_score: parseInt(e.target.value) })}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Enter max score (default 10)"
+              placeholder="Enter max score (default 5)"
             />
 
             <div className="mt-6 flex justify-end space-x-3">
@@ -184,7 +182,7 @@ const Manage = ({ event, onBack }) => {
                className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg"
               >
               <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-              {isEditMode ? 'Criteria' : 'Criteria'}
+              {isEditMode ? 'Update Criteria' : 'Add Criteria'}
               </button>
             </div>
           </div>
@@ -212,8 +210,8 @@ const Manage = ({ event, onBack }) => {
               </tr>
             </thead>
             <tbody>
-              {criteria.map((crit) => (
-                <tr key={crit.criteria_id || crit.id} className="odd:bg-white even:bg-gray-50 border-b">
+              {criteria.map((crit, index) => (
+                <tr key={`${crit.criteria_id}-${index}`} className="odd:bg-white even:bg-gray-50 border-b">
                   <td className="px-6 py-4">{crit.criteria_id}</td>
                   <td className="px-6 py-4">{crit.criteria_name}</td>
                   <td className="px-6 py-4">{crit.max_score}</td>
@@ -240,4 +238,5 @@ const Manage = ({ event, onBack }) => {
     </div>
   );
 };
+
 export default Manage;

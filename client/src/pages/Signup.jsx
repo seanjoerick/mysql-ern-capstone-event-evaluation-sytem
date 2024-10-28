@@ -109,7 +109,7 @@ const SignUp = () => {
                     <option value="">Select Year Level</option>
                     <option value="COLLEGE">College</option>
                     <option value="SENIOR_HIGH">Senior High</option>
-                    <option value="TESDA">TESDA</option>
+                    <option value="TESDA">Tesda</option>
                   </select>
                 </div>
 

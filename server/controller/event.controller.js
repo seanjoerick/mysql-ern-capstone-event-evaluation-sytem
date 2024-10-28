@@ -217,10 +217,10 @@ export const createEventCriteria = async (req, res, next) => {
         return res.status(400).json({ error: 'Criteria name and max score are required!' });
     }
 
-    // Ensure max_score is a number and equals 10
+    // Ensure max_score is a number and equals 5
     const maxScore = parseInt(max_score);
-    if (isNaN(maxScore) || maxScore !== 10) {
-        return res.status(400).json({ error: 'Max score must be exactly 10!' });
+    if (isNaN(maxScore) || maxScore !== 5) {
+        return res.status(400).json({ error: 'Max score must be exactly 5!' });
     }
 
     try {
@@ -272,7 +272,6 @@ export const createEventCriteria = async (req, res, next) => {
     }
 };
 
-
 export const updateCriteria = async (req, res, next) => {
     const { criteria_name, max_score } = req.body;
     const { criteriaId } = req.params;
@@ -282,10 +281,10 @@ export const updateCriteria = async (req, res, next) => {
         return res.status(400).json({ error: 'Criteria name and max score are required!' });
     }
 
-    // Ensure max_score is a number and equals 10
+    // Ensure max_score is a number and equals 5
     const maxScore = parseInt(max_score);
-    if (isNaN(maxScore) || maxScore !== 10) {
-        return res.status(400).json({ error: 'Max score must be exactly 10!' });
+    if (isNaN(maxScore) || maxScore !== 5) {
+        return res.status(400).json({ error: 'Max score must be exactly 5!' });
     }
 
     try {
@@ -398,7 +397,7 @@ export const getAllCriteria = async (req, res, next) => {
     }
   };
   
-  export const getEventCriteria = async (req, res, next) => {
+export const getEventCriteria = async (req, res, next) => {
     const { eventId } = req.params;
     try {
       const eventCriteria = await prisma.eventCriteria.findMany({
@@ -431,3 +430,87 @@ export const getAllCriteria = async (req, res, next) => {
     }
   };
   
+
+export const submitEvaluation = async (req, res) => {
+    const { eventId, scores, feedbackText } = req.body;
+    const userId = req.user.id;
+
+    try {
+        if (!eventId || !Array.isArray(scores) || !feedbackText) {
+            return res.status(400).json({ message: 'Invalid input data.' });
+        }
+
+        const student = await prisma.student.findFirst({
+            where: { user_id: userId },
+        });
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found for this user.' });
+        }
+
+        const studentId = student.student_id;
+
+        const result = await prisma.$transaction(async (prisma) => {
+            const evaluation = await prisma.evaluation.create({
+                data: {
+                    event_id: eventId,
+                    student_id: studentId,
+                    feedback_text: feedbackText,
+                },
+            });
+
+            await prisma.evaluationDetail.createMany({
+                data: scores.map(score => ({
+                    evaluation_id: evaluation.evaluation_id,
+                    criteria_id: score.criteriaId,
+                    score: score.score,
+                })),
+            });
+
+            return evaluation;
+        });
+
+        res.status(200).json({
+            message: 'Evaluation submit successfully',
+            evaluation: result,
+        });
+    } catch (error) {
+        console.error('Error creating evaluation:', error);
+        const statusCode = error.code === 'P2002' ? 409 : 500;
+        res.status(statusCode).json({
+            message: 'An error occurred while submitting the evaluation.',
+            error: error.message,
+        });
+    }
+};
+
+export const getSubmittedEvaluations = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+      // Find the student record
+      const student = await prisma.student.findFirst({
+        where: { user_id: userId },
+        select: { student_id: true },
+      });
+  
+      if (!student) {
+        return res.status(404).json({ message: 'Student not found for this user.' });
+      }
+  
+      // Get submitted evaluations for the student
+      const submittedEvaluations = await prisma.evaluation.findMany({
+        where: { student_id: student.student_id },
+        select: { event_id: true },
+      });
+  
+      // Extract event IDs from the submitted evaluations
+      const submittedEventIds = submittedEvaluations.map(evaluation => evaluation.event_id);
+  
+      // Respond with the submitted event IDs
+      res.status(200).json({ submittedEventIds });
+    } catch (error) {
+      console.error('Error fetching submitted evaluations:', error);
+      res.status(500).json({ message: 'Internal server error.' });
+    }
+};

@@ -198,7 +198,7 @@ export default function Events() {
                             </span>
                         </td>
                         <td className="px-6 py-4 flex space-x-2">
-                            <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
+                            <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2"
                                 onClick={() => {
                                     setSelectedEvent(event);
                                     setShowEditEventModal(true);

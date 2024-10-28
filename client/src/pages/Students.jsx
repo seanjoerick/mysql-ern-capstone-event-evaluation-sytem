@@ -14,7 +14,7 @@ export default function Students() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
-        <h2 className="text-2xl font-bold">List of Students</h2>
+        <h2 className="text-2xl font-bold">Manage Students</h2>
         <div className="flex items-center">
           <label className="input input-bordered flex items-center gap-2 mr-4">
             <input 
