@@ -5,7 +5,7 @@ import useEventCriteria from '../hooks/useEventCriteria';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Manage = ({ event, onBack }) => {
-  const { event_id, event_title } = event || {};
+  const { event_id, event_title, end_date } = event || {};
   const { criteria, loading, error, setCriteria } = useEventCriteria(event_id); 
   const [newCriteria, setNewCriteria] = useState({
     criteria_name: '',
@@ -133,7 +133,16 @@ const Manage = ({ event, onBack }) => {
         >
           <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
         </button>
-        <h2 className="text-3xl font-extrabold text-gray-800">{event_title}</h2>
+        <div className="text-center w-full">
+          <h2 className="text-3xl font-extrabold text-gray-800">{event_title}</h2>
+          <p className="text-lg text-gray-600">
+            {new Date(end_date).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </p>
+        </div>
         <div className="flex items-center">
           <button
             type="button"

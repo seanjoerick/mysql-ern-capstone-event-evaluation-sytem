@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import useGetEvents from '../hooks/useGetEvents';
 import Manage from '../components/Manage';
 import ViewFeedback from '../components/ViewFeedback';
+import ViewResults from '../components/ViewResults';
 
 export default function Evaluation() {
   const { events, loading, error } = useGetEvents();
   const [searchTerm, setSearchTerm] = useState("");
   const [showManageEvent, setShowManageEvent] = useState(false);
   const [showViewFeedback, setShowViewFeedback] = useState(false);
+  const [showViewResults, setShowViewResults] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Filter events based on the search term
@@ -20,17 +22,27 @@ export default function Evaluation() {
     setSelectedEvent(event);
     setShowManageEvent(true);
     setShowViewFeedback(false);
+    setShowViewResults(false);
   };
 
   const handleViewFeedbackClick = (event) => {
     setSelectedEvent(event);
     setShowViewFeedback(true);
     setShowManageEvent(false);
+    setShowViewResults(false); 
+  };
+
+  const handleViewResultsClick = (event) => {
+    setSelectedEvent(event);
+    setShowViewResults(true);
+    setShowManageEvent(false);
+    setShowViewFeedback(false);
   };
 
   const handleBackToList = () => {
     setShowManageEvent(false);
     setShowViewFeedback(false);
+    setShowViewResults(false);
     setSelectedEvent(null);
   };
 
@@ -40,6 +52,8 @@ export default function Evaluation() {
         <Manage event={selectedEvent} onBack={handleBackToList} />
       ) : showViewFeedback ? (
         <ViewFeedback event={selectedEvent} onBack={handleBackToList} />
+      ) : showViewResults ? (
+        <ViewResults event={selectedEvent} onBack={handleBackToList} />
       ) : (
         <div>
           <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
@@ -149,7 +163,7 @@ export default function Evaluation() {
                         </button>
                         <button
                           className="w-32 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
-                          onClick={() => handleManageClick(event)}
+                          onClick={() => handleViewResultsClick(event)}
                         >
                           View Results
                         </button>
