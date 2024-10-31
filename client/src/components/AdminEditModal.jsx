@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const EditAdminModal = ({ admin, onClose, onUpdateAdmin }) => {
   const [username, setUsername] = useState(admin?.username || '');
-  const [password, setPassword] = useState(''); // New state for password
-  const [email, setEmail] = useState(admin?.email || ''); // New state for email
+  const [password, setPassword] = useState(''); 
+  const [email, setEmail] = useState(admin?.email || '');
   const [loading, setLoading] = useState(false);
 
   // Effect to update form when the admin prop changes
@@ -90,7 +90,7 @@ const EditAdminModal = ({ admin, onClose, onUpdateAdmin }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className={`flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`flex items-center text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   disabled={loading}
                 >
                   {loading ? (
@@ -100,7 +100,7 @@ const EditAdminModal = ({ admin, onClose, onUpdateAdmin }) => {
                     </>
                   ) : (
                     <>
-                      <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
+                      <FontAwesomeIcon icon={faPlus} className="mr-2" />
                       Update
                     </>
                   )}

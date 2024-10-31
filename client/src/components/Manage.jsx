@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useEventCriteria from '../hooks/useEventCriteria'; 
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -14,6 +14,7 @@ const Manage = ({ event, onBack }) => {
   const [selectedCriteria, setSelectedCriteria] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const requiredCriteriaCount = 10;
 
   const handleAddCriteria = async () => {
     try {
@@ -40,7 +41,7 @@ const Manage = ({ event, onBack }) => {
           },
         ]);
   
-        setNewCriteria({ criteria_name: '', max_score: 5 });s
+        setNewCriteria({ criteria_name: '', max_score: 5 });
         toggleModal();
       } else {
         toast.error(data.error || 'An error occurred while adding criteria.'); 
@@ -52,9 +53,18 @@ const Manage = ({ event, onBack }) => {
       toggleModal();
     }
   };
-  
+
   const handleEditCriteria = async () => {
     try {
+      const existingCriteria = criteria.find(c => c.criteria_id === selectedCriteria.criteria_id);
+      if (existingCriteria && 
+          (existingCriteria.criteria_name === selectedCriteria.criteria_name && 
+           existingCriteria.max_score === selectedCriteria.max_score)) {
+        toast.error('No changes made to the criteria.');
+        toggleModal();
+        return;
+      }
+  
       const response = await fetch(`/api/event/criteria/update/${selectedCriteria.criteria_id}`, {
         method: 'PUT',
         headers: {
@@ -66,7 +76,6 @@ const Manage = ({ event, onBack }) => {
       const data = await response.json();
   
       if (response.ok) {
-        // Update the criteria in the state based on the response
         setCriteria(prev => 
           prev.map(criteria => 
             criteria.criteria_id === data.criteria.criteria_id 
@@ -75,7 +84,7 @@ const Manage = ({ event, onBack }) => {
           )
         );
   
-        toast.success('Criteria updated successfully!');
+        toast.success(data.message);
         setSelectedCriteria(null);
         setIsEditMode(false);
         toggleModal();
@@ -127,6 +136,7 @@ const Manage = ({ event, onBack }) => {
       <Toaster />
       
       <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
+        
         <button
           className="mt-4 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2"
           onClick={onBack}
@@ -146,15 +156,25 @@ const Manage = ({ event, onBack }) => {
         <div className="flex items-center">
           <button
             type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-            onClick={toggleModal} // Open the modal
+            className="text-white bg-gray-700 hover:gray-blue-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+            onClick={toggleModal} 
+            disabled={criteria.length >= requiredCriteriaCount} 
           >
-            <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> Criteria
+            <span className="flex items-center">
+            <FontAwesomeIcon icon={faPlus} className="mr-2" /> 
+              CRITERIA
+            </span>
           </button>
         </div>
       </div>
-
-      {/* Modal for adding or editing criteria */}
+      
+      {/* Reminder Message */}
+      {criteria.length < requiredCriteriaCount && (
+        <div className="text-red-600 text-center font-bold mb-4">
+          Please add more criteria. A total of 10 criteria are required for this event.
+        </div>
+      )}
+            
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -188,10 +208,10 @@ const Manage = ({ event, onBack }) => {
 
               <button
                onClick={isEditMode ? handleEditCriteria : handleAddCriteria}
-               className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg"
+               className="text-white bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg"
               >
-              <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-              {isEditMode ? 'Update Criteria' : 'Add Criteria'}
+              <FontAwesomeIcon icon={faPlus} className="mr-2" />
+              {isEditMode ? 'Update' : 'Criteria'}
               </button>
             </div>
           </div>
@@ -212,21 +232,21 @@ const Manage = ({ event, onBack }) => {
           <table className="w-full text-sm text-left rtl:text-right text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-4 w-1/4">Criteria ID</th>
-                <th scope="col" className="px-6 py-4 w-1/4">Criteria Name</th>
-                <th scope="col" className="px-6 py-4 w-1/4">Max Score</th>
-                <th scope="col" className="px-6 py-4 w-1/5">Actions</th>
+              <th scope="col" className="px-6 py-4 w-1/3.5">Criteria number</th>
+                <th scope="col" className="px-6 py-4 w-1/3.5">Criteria Name</th>
+                <th scope="col" className="px-6 py-4 w-1/3.5">Max Score</th>
+                <th scope="col" className="px-6 py-4 w-1/4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {criteria.map((crit, index) => (
                 <tr key={`${crit.criteria_id}-${index}`} className="odd:bg-white even:bg-gray-50 border-b">
-                  <td className="px-6 py-4">{crit.criteria_id}</td>
+                  <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{crit.criteria_name}</td>
                   <td className="px-6 py-4">{crit.max_score}</td>
                   <td className="px-6 py-4 space-x-2">
                     <button
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2"
+                      className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2"
                       onClick={() => prepareEditCriteria(crit)}
                     >
                       <FontAwesomeIcon icon={faEdit} />

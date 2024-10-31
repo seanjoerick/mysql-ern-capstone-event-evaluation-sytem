@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import useGetEvents from '../hooks/useGetEvents';
+import useEventsWith10Criteria from '../hooks/useGetEventsWith10Criteria ';
 import StudEvaluate from '../components/StudEvaluate';
 
 export default function Evaluate() {
-  const { events, loading, error } = useGetEvents();
+  const { events, loading, error } = useEventsWith10Criteria();
   const [showManageEvent, setShowManageEvent] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [submittedEventIds, setSubmittedEventIds] = useState([]);
@@ -65,7 +65,7 @@ export default function Evaluate() {
           )}
           {filteredEvents.length === 0 && !loading && !error && (
             <div className="flex justify-center items-center h-32 text-gray-500">
-              <p>No events available.</p>
+              <p>No evaluate available.</p>
             </div>
           )}
 
@@ -100,7 +100,7 @@ export default function Evaluate() {
                       </td>
                       <td className="px-6 py-4 flex space-x-2">
                         <button
-                          className="w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
+                          className="w-32 text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-1.5 py-1"
                           onClick={() => handleManageClick(event)}
                         >
                           Evaluate

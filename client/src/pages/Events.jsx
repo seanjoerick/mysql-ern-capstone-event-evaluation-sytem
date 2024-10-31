@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useGetEvents from '../hooks/useGetEvents';
 import EventModal from '../components/EventModal';
 import EditEventModal from '../components/EventEditModal';
@@ -122,10 +122,10 @@ export default function Events() {
                     </label>
                     <button
                         type="button"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                        className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
                         onClick={() => setShowAddEventModal(true)}
                     >
-                        <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> EVENT
+                        <FontAwesomeIcon icon={faPlus} className="mr-2" /> EVENT
                     </button>
                 </div>
             </div>
@@ -198,7 +198,7 @@ export default function Events() {
                             </span>
                         </td>
                         <td className="px-6 py-4 flex space-x-2">
-                            <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2"
+                            <button className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2"
                                 onClick={() => {
                                     setSelectedEvent(event);
                                     setShowEditEventModal(true);

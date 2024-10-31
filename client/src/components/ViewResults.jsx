@@ -3,38 +3,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import useEvaluationResults from '../hooks/useEvaluationResults';
 
 // Registering the chart components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ViewResults = ({ event, onBack }) => {
   const { event_id, event_title, end_date } = event || {};
+  const { evaluationResults, loading, error } = useEvaluationResults(event_id);
 
-  // Sample data for criteria and scores
-  const sampleResults = [
-    { criteriaName: 'Quality of Presentation', score: 4.8 },
-    { criteriaName: 'Engagement', score: 4.5 },
-    { criteriaName: 'Content Relevance', score: 4.7 },
-    { criteriaName: 'Speaker Knowledge', score: 4.9 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    { criteriaName: 'Overall Satisfaction', score: 4.6 },
-    
-  ];
-
-  // Calculate average rating
-  const averageRating = (sampleResults.reduce((acc, item) => acc + item.score, 0) / sampleResults.length).toFixed(1);
+  // Use evaluation results from the API
+  const criteriaData = evaluationResults?.criteria || [];
+  const overallAverageScore = evaluationResults?.overall_average_score;
+  const ratingDescription = evaluationResults?.rating;
+  const studentCount = evaluationResults?.student_count;
 
   // Data for the bar chart
   const chartData = {
-    labels: sampleResults.map(result => result.criteriaName),
+    labels: criteriaData.map(result => result.criteria_name),
     datasets: [
       {
         label: 'Scores',
-        data: sampleResults.map(result => result.score),
+        data: criteriaData.map(result => result.average_score),
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -51,6 +41,20 @@ const ViewResults = ({ event, onBack }) => {
         position: 'top',
       },
     },
+  };
+
+  const getSatisfactionDescription = (score) => {
+    if (score >= 4.5) {
+      return 'Very Satisfied';
+    } else if (score >= 3.5) {
+      return 'Satisfied';
+    } else if (score >= 2.5) {
+      return 'Neutral';
+    } else if (score >= 1.5) {
+      return 'Dissatisfied';
+    } else {
+      return 'Very Dissatisfied';
+    }
   };
 
   return (
@@ -74,27 +78,46 @@ const ViewResults = ({ event, onBack }) => {
               })}
             </p>
           </div>
-          <div className="flex items-center"></div>
         </div>
 
-        <div className="relative overflow-y-auto max-h-[600px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-4 w-1/2">Criteria Name</th>
-                <th scope="col" className="px-6 py-4 w-1/2">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sampleResults.map((result, index) => (
-                <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
-                  <td className="px-6 py-4">{result.criteriaName}</td>
-                  <td className="px-6 py-4">{result.score}</td>
+        {/* Loading, Error, and Empty State Messages */}
+        {loading && (
+          <div className="flex justify-center items-center h-32">
+            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-blue-600" role="status" />
+          </div>
+        )}
+        {error && (
+          <div className="flex justify-center items-center h-32 text-red-500">
+            <p>{error}</p>
+          </div>
+        )}
+        {criteriaData.length === 0 && !loading && !error && (
+          <div className="flex justify-center items-center h-32 text-gray-500">
+            <p>No evaluation available.</p>
+          </div>
+        )}
+
+        {/* Render Table Only If There Are Criteria Data */}
+        {criteriaData.length > 0 && (
+          <div className="relative overflow-y-auto max-h-[600px] shadow-md sm:rounded-lg mb-6 custom-scrollbar">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-4 w-1/2">Criteria Name</th>
+                  <th scope="col" className="px-6 py-4 w-1/2">Scale</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {criteriaData.map((result, index) => (
+                  <tr key={index} className="odd:bg-white even:bg-gray-50 border-b">
+                    <td className="px-6 py-4">{result.criteria_name}</td>
+                    <td className="px-6 py-4">{getSatisfactionDescription(result.average_score)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Right Column for Summary */}
@@ -111,23 +134,32 @@ const ViewResults = ({ event, onBack }) => {
             <tbody>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
                 <td className="px-6 py-4">Average Rating</td>
-                <td className="px-6 py-4 font-extrabold text-green-600">{averageRating}</td>
+                <td 
+                  className={`px-6 py-4 font-extrabold ${
+                    overallAverageScore >= 4.5 ? 'text-green-600' :
+                    overallAverageScore >= 3.5 ? 'text-blue-500' :
+                    overallAverageScore >= 2.5 ? 'text-yellow-500' :
+                    overallAverageScore >= 1.5 ? 'text-orange-500' :
+                    overallAverageScore >= 1 ? 'text-red-600' : ''
+                  }`}>
+                  {overallAverageScore !== null ? overallAverageScore : '-'}
+                </td>
               </tr>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
                 <td className="px-6 py-4">Rating</td>
-                <td className="px-6 py-4">Very Good</td>
+                <td className="px-6 py-4">{ratingDescription || '-'}</td>
               </tr>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
                 <td className="px-6 py-4">Year</td>
-                <td className="px-6 py-4">2024</td>
+                <td className="px-6 py-4">{new Date(end_date).getFullYear()}</td>
               </tr>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
                 <td className="px-6 py-4">Date</td>
-                <td className="px-6 py-4">{new Date().toLocaleDateString()}</td>
+                <td className="px-6 py-4">{new Date(end_date).toLocaleDateString()}</td>
               </tr>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
-                <td className="px-6 py-4">Additional Note</td>
-                <td className="px-6 py-4">Feedback collected successfully.</td>
+                <td className="px-6 py-4">Evaluate</td>
+                <td className="px-6 py-4">{studentCount || 0} Students</td>
               </tr>
             </tbody>
           </table>

@@ -98,10 +98,67 @@ export const getAllEvent = async (req, res, next) => {
             })
         );
 
+        // Calculate count of completed events
+        const completedEventCount = events.filter(event => event.status === 'completed').length;
+
         // Return response with events, including count even if empty
         return res.status(200).json({
             message: 'Events retrieved successfully',
             count: events.length,
+            completedCount: completedEventCount,
+            events: eventsWithAdmin,
+        });
+    } catch (error) {
+        console.error('Error retrieving Events:', error);
+        next(error);
+    }
+};
+
+export const getEventOnlyWith10Criteria = async (req, res, next) => {
+    try {
+        // Fetch all events with the count of associated criteria
+        const events = await prisma.event.findMany({
+            select: {
+                event_id: true,
+                admin_id: true,
+                event_title: true,
+                event_description: true,
+                start_date: true,
+                end_date: true,
+                status: true,
+                created_at: true,
+                _count: {
+                    select: { criteria: true },
+                },
+            },
+        });
+
+        // Filter events to include only those with exactly 10 criteria
+        const filteredEvents = events.filter(event => event._count.criteria === 10);
+
+        // Create an array to hold events with admin usernames, excluding admin_id
+        const eventsWithAdmin = await Promise.all(
+            filteredEvents.map(async (event) => {
+                // Fetch admin details based on admin_id
+                const admin = await prisma.user.findUnique({
+                    where: { user_id: event.admin_id },
+                    select: { username: true },
+                });
+
+                // Exclude admin_id
+                const { admin_id, ...eventWithoutAdminId } = event;
+
+                return {
+                    ...eventWithoutAdminId,
+                    created_by: admin ? admin.username : 'Unknown',
+                };
+            })
+        );
+
+        // Return response with events, including count even if empty
+        return res.status(200).json({
+            message: 'Events with exactly 10 criteria retrieved successfully',
+            count: eventsWithAdmin.length,
             events: eventsWithAdmin,
         });
     } catch (error) {
@@ -539,7 +596,7 @@ export const getEventFeedback = async (req, res, next) => {
     }
   };
 
-  export const getEvaluationResults = async (req, res, next) => {
+export const getEvaluationResults = async (req, res, next) => {
     const { eventId } = req.params;
 
     try {
@@ -557,8 +614,10 @@ export const getEventFeedback = async (req, res, next) => {
         const criteriaScores = {};
         let totalScore = 0;
         let totalCount = 0;
+        let studentCount = 0;
 
         evaluations.forEach(evaluation => {
+            studentCount += 1; 
             evaluation.details.forEach(detail => {
                 const { criteria } = detail;
                 if (!criteriaScores[criteria.criteria_name]) {
@@ -582,11 +641,11 @@ export const getEventFeedback = async (req, res, next) => {
         // Calculate averages
         const result = Object.keys(criteriaScores).map(key => ({
             criteria_name: key,
-            average_score: criteriaScores[key].totalScore / criteriaScores[key].count,
+            average_score: parseFloat((criteriaScores[key].totalScore / criteriaScores[key].count).toFixed(1)),
             individual_scores: criteriaScores[key].individualScores,
         }));
 
-        const overallAverageScore = totalCount > 0 ? totalScore / totalCount : null;
+        const overallAverageScore = totalCount > 0 ? parseFloat((totalScore / totalCount).toFixed(1)) : null;
 
         // Convert numeric score to descriptive rating, only if overallAverageScore is not null
         const ratingDescription = overallAverageScore !== null ? getRatingDescription(overallAverageScore) : null;
@@ -597,6 +656,7 @@ export const getEventFeedback = async (req, res, next) => {
             criteria: result,
             overall_average_score: overallAverageScore,
             rating: ratingDescription,
+            student_count: studentCount,
         });
     } catch (error) {
         console.error("Error fetching evaluation results:", error);
@@ -607,13 +667,13 @@ export const getEventFeedback = async (req, res, next) => {
 // Helper function to convert score to rating description
 const getRatingDescription = (score) => {
     if (score >= 4.5) {
-        return 'Excellent';
+        return 'Exceeded Expectations';
     } else if (score >= 3.5) {
-        return 'Good';
+        return 'Met Expectations';
     } else if (score >= 2.5) {
-        return 'Fair';
+        return 'Satisfactory';
     } else if (score >= 1.5) {
-        return 'Poor';
+        return 'Below Expectations';
     } else {
         return 'Very Poor';
     }

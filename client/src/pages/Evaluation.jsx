@@ -150,19 +150,19 @@ export default function Evaluation() {
                       </td>
                       <td className="px-6 py-4 flex space-x-2">
                         <button
-                          className="w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
+                          className="w-32 text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-1.5 py-1"
                           onClick={() => handleManageClick(event)}
                         >
                           Manage
                         </button>
                         <button
-                          className="w-32 text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
+                          className="w-32 text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-xs px-1.5 py-1"
                           onClick={() => handleViewFeedbackClick(event)}
                         >
                           View Feedback
                         </button>
                         <button
-                          className="w-32 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-1.5 py-1"
+                          className="w-32 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-1.5 py-1"
                           onClick={() => handleViewResultsClick(event)}
                         >
                           View Results

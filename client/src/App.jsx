@@ -7,7 +7,6 @@ import { useAuthContext } from './context/AuthContext';
 import Main from './components/Main';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
-import Reports from './pages/Reports';
 import Students from './pages/Students';
 import Admin from './pages/AdminAccounts';
 import Settings from './pages/Settings';
@@ -33,7 +32,6 @@ const App = () => {
             {/* Child routes will render inside MainLayout */}
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='events' element={<Events />} />
-            <Route path='reports' element={<Reports />} />
             <Route path='students' element={<Students />} />
             <Route path='admins' element={<Admin />} />
             <Route path='criteria' element={<Evaluation />} />

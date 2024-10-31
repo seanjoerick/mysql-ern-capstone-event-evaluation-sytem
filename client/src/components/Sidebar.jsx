@@ -113,19 +113,16 @@ const Sidebar = () => {
           </li>
 
           <hr className="border-t border-gray-300 my-4" />
-
           <li>
-            <Link 
-              to="/reports"
-              className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ${isActive('/reports') ? 'text-blue-600' : ''}`}
-            >
-              <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
-              <span>Reports</span>
-            </Link>
-          </li>
-
-          <hr className="border-t border-gray-300 my-4" />
-
+              <Link 
+                to="/settings"
+                className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ${isActive('/settings') ? 'text-blue-600' : ''}`}
+              >
+                <FontAwesomeIcon icon={faCog} className="mr-2" />
+                <span>Settings</span>
+              </Link>
+            </li>
+            <hr className="border-t border-gray-300 my-4" />
           <li>
             <Link 
               to="/evaluate"
@@ -135,22 +132,12 @@ const Sidebar = () => {
               <span>Evaluate</span>
             </Link>
           </li>
+
         </ul>
 
         <div className="mt-5">
-          <hr className="border-t border-gray-300 my-4" />
           <ul className="space-y-1">
-            {/* Bottom Navigation */}
-            <li>
-              <Link 
-                to="/settings"
-                className={`text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ${isActive('/settings') ? 'text-blue-600' : ''}`}
-              >
-                <FontAwesomeIcon icon={faCog} className="mr-2" />
-                <span>Settings</span>
-              </Link>
-            </li>
-            <Logout /> {/* Use the Logout component */}
+            <Logout />
           </ul>
         </div>
       </div>

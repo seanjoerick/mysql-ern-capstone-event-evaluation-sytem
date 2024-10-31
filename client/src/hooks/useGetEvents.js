@@ -5,6 +5,7 @@ const useGetEvents = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [count, setCount] = useState(0);
+  const [completed, setCompleted] = useState(0)
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -15,6 +16,8 @@ const useGetEvents = () => {
         const data = await response.json();
         setEvents(data.events);
         setCount(data.count);
+        setCompleted(data.completedCount);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -25,7 +28,7 @@ const useGetEvents = () => {
     fetchEvents();
   }, []);
 
-  return { events, setEvents, count, loading, error };
+  return { events, setEvents, completed, count, loading, error };
 };
 
 export default useGetEvents;

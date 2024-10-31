@@ -1,6 +1,6 @@
 import express from 'express';
 import { isVerifyToken, isAdmin } from '../middleware/protectedRoute.js';
-import { createEvent, createEventCriteria, deleteCriteria, deleteEvent, getAllCriteria, getAllEvent, getEvaluationResults, getEventCriteria, getEventFeedback, getSubmittedEvaluations, submitEvaluation, updateCriteria, updateEvent } from '../controller/event.controller.js';
+import { createEvent, createEventCriteria, deleteCriteria, deleteEvent, getAllCriteria, getAllEvent, getEvaluationResults, getEventCriteria, getEventFeedback, getEventOnlyWith10Criteria, getSubmittedEvaluations, submitEvaluation, updateCriteria, updateEvent } from '../controller/event.controller.js';
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/create', isVerifyToken, isAdmin, createEvent);
 router.put('/update/:eventId', isVerifyToken, isAdmin, updateEvent);
 router.get('/get', isVerifyToken, getAllEvent);
+router.get('/get10', isVerifyToken, getEventOnlyWith10Criteria);
 router.delete('/delete/:eventId', isVerifyToken, isAdmin, deleteEvent);
 
 //Criteria

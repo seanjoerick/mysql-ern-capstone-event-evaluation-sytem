@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 
 const AdminModal = ({ onClose, onAddAccount }) => {
@@ -78,9 +78,9 @@ const AdminModal = ({ onClose, onAddAccount }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                  className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
-                   <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> Account
+                   <FontAwesomeIcon icon={faPlus} className="mr-2" /> Account
                 </button>
               </div>
             </form>
