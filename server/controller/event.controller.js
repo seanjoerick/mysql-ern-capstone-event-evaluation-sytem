@@ -114,6 +114,66 @@ export const getAllEvent = async (req, res, next) => {
     }
 };
 
+export const getEventsSummary = async (req, res, next) => {
+    try {
+        const now = new Date();
+
+        // Fetch the last 3 completed events
+        const completedEvents = await prisma.event.findMany({
+            where: { status: 'completed' },
+            orderBy: { created_at: 'desc' },
+            take: 3,
+        });
+
+        // Fetch the last 3 upcoming events
+        const upcomingEvents = await prisma.event.findMany({
+            where: {
+                start_date: { gte: now },
+                status: 'active',
+            },
+            orderBy: { start_date: 'asc' },
+            take: 3,
+        });
+
+        // Add admin usernames to completed events
+        const completedEventsWithAdmin = await Promise.all(
+            completedEvents.map(async (event) => {
+                const admin = await prisma.user.findUnique({
+                    where: { user_id: event.admin_id },
+                    select: { username: true },
+                });
+                return {
+                    ...event,
+                    created_by: admin ? admin.username : 'Unknown',
+                };
+            })
+        );
+
+        // Add admin usernames to upcoming events
+        const upcomingEventsWithAdmin = await Promise.all(
+            upcomingEvents.map(async (event) => {
+                const admin = await prisma.user.findUnique({
+                    where: { user_id: event.admin_id },
+                    select: { username: true },
+                });
+                return {
+                    ...event,
+                    created_by: admin ? admin.username : 'Unknown',
+                };
+            })
+        );
+
+        return res.status(200).json({
+            message: 'Events summary retrieved successfully',
+            completedEvents: completedEventsWithAdmin,
+            upcomingEvents: upcomingEventsWithAdmin,
+        });
+    } catch (error) {
+        console.error('Error retrieving events summary:', error);
+        next(error);
+    }
+};
+
 export const getEventOnlyWith10Criteria = async (req, res, next) => {
     try {
         // Fetch all events with the count of associated criteria
@@ -676,5 +736,70 @@ const getRatingDescription = (score) => {
         return 'Below Expectations';
     } else {
         return 'Very Poor';
+    }
+};
+
+export const getTopEvents = async (req, res, next) => {
+    const { year } = req.params;
+    const startDate = new Date(`${year}-01-01T00:00:00Z`);
+    const endDate = new Date(`${year}-12-31T23:59:59Z`);
+
+    try {
+        const events = await prisma.event.findMany({
+            where: {
+                start_date: {
+                    gte: startDate,
+                    lte: endDate,
+                },
+            },
+            include: {
+                evaluations: {
+                    include: {
+                        details: true,
+                    },
+                },
+            },
+        });
+
+        const eventScores = {};
+
+        // Calculate scores for each event
+        events.forEach(event => {
+            // Only process events that have evaluations
+            if (event.evaluations.length > 0) {
+                const totalScore = event.evaluations.reduce((total, evaluation) => {
+                    return total + evaluation.details.reduce((sum, detail) => sum + detail.score, 0);
+                }, 0);
+
+                const totalCount = event.evaluations.reduce((count, evaluation) => {
+                    return count + evaluation.details.length;
+                }, 0);
+
+                // Calculate average score
+                const averageScore = totalCount > 0 ? totalScore / totalCount : 0;
+
+                // Store event info and scores
+                eventScores[event.event_id] = {
+                    event_id: event.event_id,
+                    event_title: event.event_title,
+                    average_score: parseFloat(averageScore.toFixed(1)),
+                    total_evaluations: totalCount,
+                };
+            }
+        });
+
+        // Convert the scores object into an array and sort by average score
+        const sortedEvents = Object.values(eventScores)
+            .sort((a, b) => b.average_score - a.average_score)
+            .slice(0, 5);
+
+        // Send a successful response back to the client
+        res.status(200).json({
+            message: 'Top events retrieved successfully',
+            top_events: sortedEvents,
+        });
+    } catch (error) {
+        console.error("Error fetching top events:", error);
+        next(error);
     }
 };

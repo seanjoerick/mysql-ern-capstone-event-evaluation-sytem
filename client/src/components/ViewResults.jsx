@@ -1,12 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Radar } from 'react-chartjs-2'; 
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js'; 
 import useEvaluationResults from '../hooks/useEvaluationResults';
 
 // Registering the chart components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 const ViewResults = ({ event, onBack }) => {
   const { event_id, event_title, end_date } = event || {};
@@ -18,7 +18,7 @@ const ViewResults = ({ event, onBack }) => {
   const ratingDescription = evaluationResults?.rating;
   const studentCount = evaluationResults?.student_count;
 
-  // Data for the bar chart
+  // Data for the radar chart
   const chartData = {
     labels: criteriaData.map(result => result.criteria_name),
     datasets: [
@@ -26,15 +26,25 @@ const ViewResults = ({ event, onBack }) => {
         label: 'Scores',
         data: criteriaData.map(result => result.average_score),
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        borderColor: 'rgba(75, 192, 192, 1)', 
         borderWidth: 1,
+        fill: true, 
       },
     ],
   };
 
-  // Options for the chart
+  // Options for the radar chart with scale limits
   const chartOptions = {
     responsive: true,
+    scales: {
+      r: {
+        min: 1,
+        max: 5, 
+        ticks: {
+          stepSize: 1, 
+        },
+      },
+    },
     plugins: {
       legend: {
         display: true,
@@ -165,9 +175,9 @@ const ViewResults = ({ event, onBack }) => {
           </table>
         </div>
 
-        {/* Bar Chart Below the Summary Table */}
+        {/* Radar Chart Below the Summary Table */}
         <div className="mt-4">
-          <Bar data={chartData} options={chartOptions} />
+          <Radar data={chartData} options={chartOptions} /> {/* Radar component */}
         </div>
       </div>
     </div>
