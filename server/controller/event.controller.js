@@ -724,6 +724,38 @@ export const getEvaluationResults = async (req, res, next) => {
     }
 };
 
+export const getTotalEvaluationsForEvents = async (req, res) => {
+    try {
+      // Fetch all events along with their evaluations
+      const eventsWithEvaluations = await prisma.event.findMany({
+        include: {
+          evaluations: true,
+        },
+      });
+  
+      const results = eventsWithEvaluations
+        .map(event => ({
+          eventId: event.event_id,
+          title: event.event_title,
+          totalEvaluations: event.evaluations.length,
+        }))
+        .filter(event => event.totalEvaluations > 0)
+  
+        // Sort by totalEvaluations in descending order
+        .sort((a, b) => b.totalEvaluations - a.totalEvaluations);
+  
+      // Limit to top 10
+      const topEvents = results.slice(0, 10);
+  
+      return res.json(topEvents);
+    } catch (error) {
+      console.error("Error fetching evaluations for events:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
+
+
 // Helper function to convert score to rating description
 const getRatingDescription = (score) => {
     if (score >= 4.5) {

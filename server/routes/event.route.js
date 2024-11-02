@@ -1,6 +1,6 @@
 import express from 'express';
 import { isVerifyToken, isAdmin } from '../middleware/protectedRoute.js';
-import { createEvent, createEventCriteria, deleteCriteria, deleteEvent, getAllCriteria, getAllEvent, getEvaluationResults, getEventCriteria, getEventFeedback, getEventOnlyWith10Criteria, getEventsSummary, getSubmittedEvaluations, getTopEvents, submitEvaluation, updateCriteria, updateEvent } from '../controller/event.controller.js';
+import { createEvent, createEventCriteria, deleteCriteria, deleteEvent, getAllCriteria, getAllEvent, getEvaluationResults, getEventCriteria, getEventFeedback, getEventOnlyWith10Criteria, getEventsSummary, getSubmittedEvaluations, getTotalEvaluationsForEvents, getTopEvents, submitEvaluation, updateCriteria, updateEvent } from '../controller/event.controller.js';
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.get('/evaluations/submitted/get', isVerifyToken, getSubmittedEvaluations)
 
 router.get('/evaluations/results/get/:eventId', isVerifyToken, getEvaluationResults);
 router.get('/evaluations/results/top-events/:year', isVerifyToken, getTopEvents);
-
+router.get('/evaluations/results/total-evaluations', isVerifyToken, getTotalEvaluationsForEvents)
 
 
 export default router;
