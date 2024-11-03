@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faBell, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import useLogin from '../hooks/useLogin';
+import trimex from '../assets/images/trimex.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,8 +16,12 @@ const Login = () => {
     await login({ email, password });
   };
 
-  const handleTermsRedirect = () => {
-    navigate('/terms');
+  const handleLogin = () => {
+    navigate('/signup');
+  };
+
+  const handleBackToSite = () => {
+    navigate('/');
   };
 
   return (
@@ -26,7 +31,7 @@ const Login = () => {
           {/* Logo Section */}
           <div className="text-center mb-6">
             <img 
-              src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" 
+              src={trimex}
               alt="Trimex Logo" 
               className="mx-auto h-20 w-auto"
               style={{ height: '100px', width: '200px' }}
@@ -36,7 +41,7 @@ const Login = () => {
           <h3 className="text-3xl font-extrabold text-center">Login</h3>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
-              {/* Username Input */}
+              {/* Email Input */}
               <div>
                 <label className="label">
                   <span className="label-text">Email Address</span>
@@ -80,7 +85,7 @@ const Login = () => {
             <div className="mt-5">
               <button
                 type="submit"
-                className="w-full py-3.5 flex items-center justify-center bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500 disabled:bg-gray-400"
+                className="w-full py-3.5 flex items-center justify-center bg-gray-800 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500 disabled:bg-gray-400"
                 disabled={loading}
               >
                 {loading ? (
@@ -98,7 +103,7 @@ const Login = () => {
               Don't have an account?{' '}
               <button 
                 className="link link-primary" 
-                onClick={handleTermsRedirect}
+                onClick={handleLogin}
               >
                 Sign up here
               </button>
@@ -113,6 +118,16 @@ const Login = () => {
                 <span className="ml-2 text-gray-800">Stay updated with events!</span>
               </div>
             </div>
+          </div>
+
+            {/* Back to Site Button */}
+            <div className="text-center mb-6">
+            <button
+              onClick={handleBackToSite}
+              className="text-blue-500 hover:underline mb-4"
+            >
+              Back to Site
+            </button>
           </div>
         </div>
       </div>

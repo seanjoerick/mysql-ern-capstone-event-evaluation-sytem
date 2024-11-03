@@ -1,56 +1,94 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/LandingPageHeader';
 import Footer from '../components/Footer'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faHeadset, faBolt, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faHeadset, faBolt, faLock, faClipboardCheck, faPencilRuler, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import section from '../assets/images/section.jpg';
 
 const LandingPage = () => {
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimate(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="landing-page">
       <Header />
-
       <div className="font-sans">
-        <div className="grid lg:grid-cols-2 items-center lg:gap-y-6 bg-gray-500">
-          <div className="max-lg:order-1 max-lg:text-center sm:p-12 p-4">
-            <h2 className="text-gray-800 lg:text-5xl text-3xl font-bold lg:!leading-[56px]">Elevate Your Experience with Modern Elegance</h2>
-            <p className="text-gray-800 mt-6 text-base leading-relaxed">Laboris qui Lorem ad tempor ut reprehenderit. Nostrud anim nulla officia ea sit deserunt. Eu eu quis anim aute Laboris qui Lorem ad tempor ut reprehenderit.</p>
-            <button type='button' className="bg-transparent border-2 border-gray-800 mt-12 transition-all text-gray-800 font-bold text-sm rounded-md px-6 py-2.5">Get Started</button>
+        <div className="relative lg:grid lg:grid-cols-2 lg:gap-y-6 bg-gray-300 p-8 rounded-lg shadow-md">
+          
+        <div className="max-lg:order-1 max-lg:text-center flex flex-col items-center justify-center h-full">
+            <p className="text-gray-800 text-md mb-4 text-center">
+              Welcome to the Event Evaluation System, where you can provide feedback on events and help us improve future experiences.
+            </p>
+            {/* Centered buttons */}
+            <div className="flex gap-4 mt-4 justify-center">
+              <Link to="/login" className="bg-gray-800 text-white font-bold text-sm rounded-md px-6 py-2 transition-all hover:bg-gray-600 shadow">
+                Login
+              </Link>
+              <Link to="/signup" className="bg-transparent border-2 border-gray-800 text-gray-800 font-bold text-sm rounded-md px-6 py-2 transition-all hover:bg-gray-600 hover:text-white shadow">
+                Sign Up
+              </Link>
+            </div>
           </div>
 
-          <div className="lg:h-[480px] flex items-center">
-            <img src="https://readymadeui.com/team-image.webp" className="w-full h-full object-cover" alt="Dining Experience" />
+          <div className="lg:h-[480px] flex items-center justify-center relative">
+            <img src={section} className="w-full h-full object-cover rounded-md shadow-md" alt="Dining Experience" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-300 bg-opacity-70 p-6 rounded-md shadow-lg">
+              <h2 className={`text-2xl font-bold mb-4 text-gray-800 ${animate ? 'animate-slide' : ''}`}>
+                Event Evaluation System
+              </h2>
+              <div className="flex items-center mb-2">
+                <FontAwesomeIcon icon={faClipboardCheck} className="text-gray-600 mr-2" />
+                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
+                  Students can evaluate past events to provide valuable feedback.
+                </p>
+              </div>
+              <div className="flex items-center mb-2">
+                <FontAwesomeIcon icon={faPencilRuler} className="text-gray-600 mr-2" />
+                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
+                  Organizers can create tailored evaluations for each event.
+                </p>
+              </div>
+              <div className="flex items-center mb-2">
+                <FontAwesomeIcon icon={faLightbulb} className="text-gray-600 mr-2" />
+                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
+                  Experience an intuitive design for effortless feedback submission.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 px-4 my-12">
           <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faCogs} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Customization</h3>
-            <p className="text-sm text-gray-600">Tailor our product to suit your needs.</p>
-            <Link to="/customization" className="text-blue-600 font-bold inline-block text-sm mt-4 hover:underline">Learn more</Link>
+            <FontAwesomeIcon icon={faCogs} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
+            <h3 className="text-lg font-bold mb-2 text-gray-800">Event Evaluation</h3>
+            <p className="text-sm text-gray-600">Students can evaluate past events to provide valuable feedback.</p>
           </div>
           <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faHeadset} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Support</h3>
-            <p className="text-sm text-gray-600">24/7 customer support for all your inquiries.</p>
-            <Link to="/support" className="text-blue-600 font-bold inline-block text-sm mt-4 hover:underline">Learn more</Link>
+            <FontAwesomeIcon icon={faHeadset} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
+            <h3 className="text-lg font-bold mb-2 text-gray-800">Organizer Dashboard</h3>
+            <p className="text-sm text-gray-600">Organizers can create tailored evaluations for each event.</p>
           </div>
           <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faBolt} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Performance</h3>
-            <p className="text-sm text-gray-600">Experience blazing-fast performance with our product.</p>
-            <Link to="/performance" className="text-blue-600 font-bold inline-block text-sm mt-4 hover:underline">Learn more</Link>
+            <FontAwesomeIcon icon={faBolt} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
+            <h3 className="text-lg font-bold mb-2 text-gray-800">User-Friendly Interface</h3>
+            <p className="text-sm text-gray-600">Experience an intuitive design for effortless feedback submission.</p>
           </div>
           <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faLock} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md" />
+            <FontAwesomeIcon icon={faLock} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
             <h3 className="text-lg font-bold mb-2 text-gray-800">Security</h3>
             <p className="text-sm text-gray-600">We prioritize your security and privacy.</p>
-            <Link to="/security" className="text-blue-600 font-bold inline-block text-sm mt-4 hover:underline">Learn more</Link>
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import useSignup from '../hooks/useSignup';
+import trimex from '../assets/images/trimex.png';
 
 const SignUp = () => {
   const [yearLevelType, setYearLevelType] = useState('');
@@ -19,6 +20,7 @@ const SignUp = () => {
   });
 
   const { signup, loading } = useSignup();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch strands and courses on mount
@@ -78,13 +80,17 @@ const SignUp = () => {
     });
   };
 
+  const handleBackToSite = () => {
+    navigate('/');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="card w-full max-w-2xl shadow-xl bg-base-100">
         <div className="card-body">
           <div className="text-center">
             <img
-              src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png"
+              src={trimex}
               alt="Trimex Logo"
               className="mx-auto h-20 w-auto"
               style={{ height: '100px', width: '200px' }}
@@ -92,7 +98,6 @@ const SignUp = () => {
           </div>
           <h3 className="text-3xl font-extrabold text-center">Sign Up</h3>
           <form onSubmit={handleSubmit}>
-            
             <div className="space-y-4 mb-4">
               {/* Year Level Input */}
               <div className="flex space-x-4">
@@ -244,7 +249,7 @@ const SignUp = () => {
               </div>
 
               {/* Submit Button */}
-              <button type="submit" className="btn bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500 disabled:bg-gray-400 w-full" disabled={loading}>
+              <button type="submit" className="btn bg-gray-800 text-white hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-500 disabled:bg-gray-400 w-full" disabled={loading}>
                 {loading ? 'Signing Up...' : 'Sign Up'}
               </button>
 
@@ -256,6 +261,15 @@ const SignUp = () => {
               </p>
             </div>
           </form>
+          {/* Back to Site Button */}
+          <div className="text-center mb-4">
+            <button
+              onClick={handleBackToSite}
+              className="text-blue-500 hover:underline mb-4"
+            >
+              Back to Site
+            </button>
+          </div>
         </div>
       </div>
     </div>

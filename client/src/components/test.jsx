@@ -251,4 +251,25 @@
   <FontAwesomeIcon icon={faCog} className="mr-2" />
   <span>Settings</span>
 </Link>
-</li> */}
+</li> */}\
+
+
+
+
+
+
+<h2 className="text-xl font-bold text-center mb-4">Terms and Conditions</h2>
+<p className="mb-4 text-center">
+  Welcome to the Event Evaluation System of Trimex Colleges. By signing up, you agree to the following terms and conditions:
+</p>
+<ul className="mb-4 list-disc list-inside text-left">
+  <li>All data provided must be accurate and up-to-date.</li>
+  <li>Your participation in the event evaluation is voluntary.</li>
+  <li>Trimex Colleges respects your privacy and is committed to complying with Philippine data protection laws.</li>
+  <li>The information collected will only be used for evaluation purposes and will not be shared with third parties without your consent.</li>
+  <li>Any misconduct or inappropriate behavior during the evaluation process may result in consequences as per school policies.</li>
+  <li>By using this system, you acknowledge that you have read and understood these terms and conditions.</li>
+</ul>
+<p className="mb-4 text-center">
+  Trimex Colleges is committed to adhering to Philippine laws and regulations regarding data privacy and protection, including the Data Privacy Act of 2012 (Republic Act No. 10173).
+</p>

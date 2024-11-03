@@ -10,6 +10,8 @@ import {
 import Logout from './Logout';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext'; 
+import trimex from  '../assets/images/trimex.png';
+
 
 const Sidebar = () => {
   const { authUser } = useAuthContext();
@@ -32,7 +34,7 @@ const Sidebar = () => {
       <div className="relative text-center mb-4">
         <h2 className="text-xl font-bold mb-2">Event Evaluation System</h2>
         <Link to="/">
-          <img src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" alt="Logo" className="w-[160px] mx-auto" />
+          <img src={trimex} alt="Logo" className="w-[160px] mx-auto" />
         </Link>
       </div>
 

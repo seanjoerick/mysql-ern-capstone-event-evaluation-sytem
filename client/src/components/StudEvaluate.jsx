@@ -6,14 +6,14 @@ import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import useEventCriteria from '../hooks/useEventCriteria';
 import toast from 'react-hot-toast';
 
-const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
+const StudEvaluate = ({ event, onBack, onSubmitSuccess }) => {
   const { event_id, event_title, end_date } = event || {};
   const { criteria } = useEventCriteria(event_id);
   const [ratings, setRatings] = useState({});
   const [feedback, setFeedback] = useState('');
 
   const handleRatingChange = (criteriaId, rating) => {
-    setRatings(prevRatings => ({
+    setRatings((prevRatings) => ({
       ...prevRatings,
       [criteriaId]: rating,
     }));
@@ -24,13 +24,13 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
       toast.error('Please rate all criteria and provide feedback before submitting.');
       return;
     }
-  
+
     // Prepare data for submission
     const scores = Object.entries(ratings).map(([criteriaId, score]) => ({
       criteriaId: parseInt(criteriaId),
       score,
     }));
-  
+
     try {
       const response = await fetch('/api/event/evaluations', {
         method: 'POST',
@@ -43,7 +43,7 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
           feedbackText: feedback,
         }),
       });
-  
+
       if (!response.ok) throw new Error('Failed to submit evaluation.');
       const data = await response.json();
       toast.success(data.message);
@@ -56,7 +56,7 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
       toast.error(error.message);
     }
   };
-  
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6 border-b-2 border-gray-500 pb-2">
@@ -73,7 +73,7 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
             {new Date(end_date).toLocaleDateString(undefined, {
               year: 'numeric',
               month: 'long',
-              day: 'numeric'
+              day: 'numeric',
             })}
           </p>
         </div>
@@ -83,11 +83,21 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
       <div className="mt-4 p-4 border border-gray-300 rounded-md">
         <h3 className="font-semibold">Rating Legend:</h3>
         <ul className="list-disc pl-5">
-          <li>⭐(5) - Very Satisfied: Exceeded all expectations</li>
-          <li>⭐(4) - Satisfied: Met most expectations</li>
-          <li>⭐(3) - Neutral: Met basic expectations</li>
-          <li>⭐(2) - Dissatisfied: Below average; significant issues</li>
-          <li>⭐(1) - Very Dissatisfied: Did not meet expectations</li>
+          <li>
+            <FontAwesomeIcon icon={solidStar} className="text-gray-400" /> (5) - Very Satisfied: Exceeded all expectations
+          </li>
+          <li>
+            <FontAwesomeIcon icon={solidStar} className="text-gray-400" /> (4) - Satisfied: Met most expectations
+          </li>
+          <li>
+            <FontAwesomeIcon icon={solidStar} className="text-gray-400" /> (3) - Neutral: Met basic expectations
+          </li>
+          <li>
+            <FontAwesomeIcon icon={solidStar} className="text-gray-400" /> (2) - Dissatisfied: Below average; significant issues
+          </li>
+          <li>
+            <FontAwesomeIcon icon={solidStar} className="text-gray-400" /> (1) - Very Dissatisfied: Did not meet expectations
+          </li>
         </ul>
       </div>
 
@@ -104,7 +114,7 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
               <td className="px-6 py-4 font-medium">{crit.criteria_name}</td>
               <td className="px-6 py-4">
                 <div className="flex justify-center space-x-1">
-                  {[1, 2, 3, 4, 5].map(starRating => (
+                  {[1, 2, 3, 4, 5].map((starRating) => (
                     <label key={starRating} className="cursor-pointer">
                       <input
                         type="radio"
@@ -116,7 +126,7 @@ const StudEvaluate = ({ event, onBack, onSubmitSuccess  }) => {
                       />
                       <FontAwesomeIcon
                         icon={ratings[crit.criteria_id] >= starRating ? solidStar : regularStar}
-                        className="text-yellow-500 text-2xl"
+                        className="text-gray-800 text-2xl"
                       />
                     </label>
                   ))}
