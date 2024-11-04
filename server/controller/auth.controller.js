@@ -1,6 +1,8 @@
 import prisma from '../prismaClient.js';
 import bcryptjs from 'bcryptjs';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
+import crypto  from 'crypto';
+import { sendNewPasswordEmail } from '../mailer.js';
 
 export const signup = async (req, res, next) => {
   const {
@@ -16,6 +18,17 @@ export const signup = async (req, res, next) => {
   } = req.body;
 
   try {
+      // Check for spaces in email and password
+      if (/\s/.test(email) || /\s/.test(password)) {
+          return res.status(400).json({ error: 'Email and password cannot contain spaces.' });
+      }
+
+      // Validate first name and last name for unwanted characters
+      const nameRegex = /^[a-zA-Z\s]*$/; 
+      if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
+          return res.status(400).json({ error: 'First name and last name can only contain letters and spaces.' });
+      }
+
       // Check if the user already exists
       const existingUser = await prisma.user.findFirst({
           where: {
@@ -67,15 +80,15 @@ export const signup = async (req, res, next) => {
 
       const fullName = `${firstName} ${lastName}`;
 
-       // Send response with additional user information
-       res.status(201).json({
-        success: true,
-        message: 'User created successfully!',
-        username: user.username,
-        fullName: fullName,
-        email: user.email,
-        role: user.role,
-    });
+      // Send response with additional user information
+      res.status(201).json({
+          success: true,
+          message: 'User created successfully!',
+          username: user.username,
+          fullName: fullName,
+          email: user.email,
+          role: user.role,
+      });
   } catch (error) {
       console.error('Error during signup:', error);
       // Prevent sending multiple responses
@@ -84,7 +97,6 @@ export const signup = async (req, res, next) => {
       }
   }
 };
-
 
 // Log in an existing user
 export const login = async (req, res, next) => {
@@ -124,6 +136,38 @@ export const login = async (req, res, next) => {
   } catch (error) {
     console.error('Error in login controller:', error);
     next(error);
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+      // Check if the user exists
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+          return res.status(404).json({ message: 'User with this email does not exist' });
+      }
+
+      // Generate a new password
+      const newPassword = crypto.randomBytes(8).toString('hex'); 
+
+      // Hash the new password
+      const hashedPassword = await bcryptjs.hash(newPassword, 10);
+
+      // Update user's password in the database
+      await prisma.user.update({
+          where: { email },
+          data: { password: hashedPassword },
+      });
+
+      // Send new password email
+      await sendNewPasswordEmail(user.email, newPassword);
+
+      res.status(200).json({ message: 'New password sent to your email.' });
+  } catch (error) {
+      console.error('Error in forgotPassword:', error);
+      res.status(500).json({ message: 'Server error' });
   }
 };
 

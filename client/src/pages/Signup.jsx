@@ -23,7 +23,6 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch strands and courses on mount
     const fetchStrands = async () => {
       try {
         const response = await fetch('/api/course/strand/get');
@@ -61,7 +60,7 @@ const SignUp = () => {
 
   const handleYearLevelChange = (e) => {
     setYearLevelType(e.target.value);
-    setSelectedCourse('');
+    setSelectedCourse(''); 
   };
 
   const handleInputChange = (e) => {
@@ -76,7 +75,7 @@ const SignUp = () => {
       yearLevelType,
       strandId: yearLevelType === 'SENIOR_HIGH' ? selectedCourse : null,
       courseId: yearLevelType === 'COLLEGE' ? parseInt(selectedCourse) : null,
-      tesdaCourseId: yearLevelType === 'TESDA' ? parseInt(selectedCourse) : null, 
+      tesdaCourseId: yearLevelType === 'TESDA' ? parseInt(selectedCourse) : null,
     });
   };
 
@@ -103,7 +102,7 @@ const SignUp = () => {
               <div className="flex space-x-4">
                 <div className="flex-1">
                   <label className="label">
-                    <span className="label-text">Year Level / Type</span>
+                    <span className="label-text">Education Level</span>
                   </label>
                   <select
                     className="select select-bordered w-full"
@@ -111,7 +110,7 @@ const SignUp = () => {
                     value={yearLevelType}
                     onChange={handleYearLevelChange}
                   >
-                    <option value="">Select Year Level</option>
+                    {!yearLevelType && <option value="">Select Year Level</option>}
                     <option value="COLLEGE">College</option>
                     <option value="SENIOR_HIGH">Senior High</option>
                     <option value="TESDA">Tesda</option>
@@ -128,7 +127,7 @@ const SignUp = () => {
                     value={selectedCourse}
                     onChange={(e) => setSelectedCourse(e.target.value)}
                   >
-                    <option value="">Select Course/Strand</option>
+                    {!selectedCourse && <option value="">Select Course/Strand</option>}
                     {yearLevelType === 'COLLEGE' &&
                       courses.map((course) => (
                         <option key={course.course_id} value={course.course_id}>
@@ -262,14 +261,14 @@ const SignUp = () => {
             </div>
           </form>
           {/* Back to Site Button */}
-          <div className="text-center mb-4">
+          {/* <div className="text-center mb-4">
             <button
               onClick={handleBackToSite}
               className="text-blue-500 hover:underline mb-4"
             >
               Back to Site
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -277,3 +276,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+

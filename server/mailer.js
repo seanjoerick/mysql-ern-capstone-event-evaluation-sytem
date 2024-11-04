@@ -11,6 +11,42 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+export const sendNewPasswordEmail = async (recipientEmail, newPassword) => {
+    const htmlContent = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.5;">
+            <h2>Password Reset Confirmation</h2>
+            <p>Hi there,</p>
+            <p>We received a request to reset the password for your account associated with the email address <strong>${recipientEmail}</strong>.</p>
+            <p>Your new password is: <strong>${newPassword}</strong></p>
+            <p>Please log in using this password and remember to change it to something more memorable after your first login.</p>
+            <p>For your security, we recommend that you:</p>
+            <ul>
+                <li>Change your password immediately after logging in.</li>
+                <li>Use a unique password that you do not use for any other accounts.</li>
+            </ul>
+            <p>If you did not request this password reset, please ignore this email. If you have any concerns, feel free to reach out to our support team.</p>
+            <p>Thank you for your attention!</p>
+            <p>Best regards,<br>The Support Team</p>
+        </div>
+    `;
+
+    const mailOptions = {
+        from: `"Support Team" <${process.env.APP_EMAIL}>`,
+        to: recipientEmail,
+        subject: 'Your New Password',
+        html: htmlContent,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`New password email sent successfully to: ${recipientEmail}`);
+    } catch (error) {
+        console.error(`Error sending new password email to ${recipientEmail}:`, error.message);
+    }
+};
+
+
+
 // Function to format the date
 const formatEventDate = (eventDate) => {
     const date = new Date(eventDate);

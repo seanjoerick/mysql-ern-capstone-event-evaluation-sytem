@@ -121,14 +121,14 @@ const Login = () => {
           </div>
 
             {/* Back to Site Button */}
-            <div className="text-center mb-6">
+            {/* <div className="text-center mb-6">
             <button
               onClick={handleBackToSite}
               className="text-blue-500 hover:underline mb-4"
             >
               Back to Site
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

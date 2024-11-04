@@ -8,14 +8,14 @@ generator client {
 }
 
 model User {
-  user_id    Int      @id @default(autoincrement())
-  username   String   @unique
-  password   String
-  email      String   @unique
-  role       Role
-  created_at DateTime @default(now())
+  user_id      Int      @id @default(autoincrement())
+  username     String   @unique
+  password     String
+  email        String   @unique
+  role         Role
+  created_at   DateTime @default(now())
 
-  students   Student[] // Establishes a one-to-many relationship with Student
+  students     Student[] // Establishes a one-to-many relationship with Student
 
   @@map("tbl_users")
 }

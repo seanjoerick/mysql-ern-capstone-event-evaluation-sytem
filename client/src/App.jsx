@@ -12,7 +12,7 @@ import Students from './pages/Students';
 import Admin from './pages/AdminAccounts';
 import Evaluation from './pages/Evaluation';
 import Evaluate from './pages/Evaluate';
-
+import ForgotPassword from './pages/ForgotPassword';
 const App = () => {
   const { authUser } = useAuthContext();
 
@@ -24,6 +24,7 @@ const App = () => {
         <Route path='/' element={authUser ? (authUser.role === 'student' ? <Navigate to='/evaluate' /> : <Navigate to='/dashboard' />) : <LandingPage />} />
         <Route path='/login' element={authUser ? <Navigate to={authUser.role === 'student' ? '/evaluate' : '/dashboard'} /> : <Login />} />
         <Route path='/signup' element={authUser ? <Navigate to={authUser.role === 'student' ? '/evaluate' : '/dashboard'} /> : <SignUp />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
 
         {/* Protected routes with Sidebar */}
         {authUser && (

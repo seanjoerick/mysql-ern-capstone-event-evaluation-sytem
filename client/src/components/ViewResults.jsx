@@ -4,6 +4,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Radar } from 'react-chartjs-2'; 
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js'; 
 import useEvaluationResults from '../hooks/useEvaluationResults';
+import PDFContent from './PDFContent';
 
 // Registering the chart components
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -18,46 +19,35 @@ const ViewResults = ({ event, onBack }) => {
   const ratingDescription = evaluationResults?.rating;
   const studentCount = evaluationResults?.student_count;
 
- // Data for the radar chart with multiple colors
-const colors = [
-  'rgba(255, 99, 132, 0.6)',
-  'rgba(54, 162, 235, 0.6)',
-  'rgba(255, 206, 86, 0.6)',
-  'rgba(75, 192, 192, 0.6)',
-  'rgba(153, 102, 255, 0.6)',
-  'rgba(255, 159, 64, 0.6)',
-  'rgba(199, 199, 199, 0.6)',
-  'rgba(83, 102, 255, 0.6)',
-  'rgba(200, 99, 132, 0.6)',
-  'rgba(100, 206, 86, 0.6)',
-];
-const borderColors = [
-  'rgba(255, 99, 132, 1)',
-  'rgba(54, 162, 235, 1)',
-  'rgba(255, 206, 86, 1)',
-  'rgba(75, 192, 192, 1)',
-  'rgba(153, 102, 255, 1)',
-  'rgba(255, 159, 64, 1)',
-  'rgba(199, 199, 199, 1)',
-  'rgba(83, 102, 255, 1)',
-  'rgba(200, 99, 132, 1)',
-  'rgba(100, 206, 86, 1)',
-];
+   const colors = [
+    'rgba(255, 99, 132, 0.6)',
+    'rgba(54, 162, 235, 0.6)', 
+    'rgba(255, 206, 86, 0.6)', 
+    'rgba(75, 192, 192, 0.6)', 
+    'rgba(153, 102, 255, 0.6)', 
+  ];
 
-const chartData = {
-  labels: criteriaData.map(result => result.criteria_name),
-  datasets: [
-    {
-      label: 'Scores',
-      data: criteriaData.map(result => result.average_score),
-      backgroundColor: colors,
-      borderColor: borderColors,
-      borderWidth: 2,
-      fill: true,
-    },
-  ],
-};
+  const borderColors = [
+    'rgba(255, 99, 132, 1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+  ];
 
+  const chartData = {
+    labels: criteriaData.map(result => result.criteria_name),
+    datasets: [
+      {
+        label: 'Scores',
+        data: criteriaData.map(result => result.average_score),
+        backgroundColor: colors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        fill: true,
+      },
+    ],
+  };
 
   // Options for the radar chart with scale limits
   const chartOptions = {
@@ -92,6 +82,7 @@ const chartData = {
       return 'Very Dissatisfied';
     }
   };
+
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -158,7 +149,16 @@ const chartData = {
 
       {/* Right Column for Summary */}
       <div className="w-full md:w-1/3 p-4 bg-gray-50 shadow-md rounded-lg">
-        <h3 className="text-xl font-bold mb-4">Summary</h3>
+        <div className="flex justify-between items-start mb-4">
+          <h3 className="text-xl font-bold">Summary</h3>
+          <PDFContent 
+            event={event} 
+            overallAverageScore={overallAverageScore} 
+            ratingDescription={ratingDescription} 
+            studentCount={studentCount} 
+            criteriaData={criteriaData} 
+          />
+        </div>
         <div className="relative overflow-y-auto max-h-[550px] shadow-md sm:rounded-lg mb-6">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -194,7 +194,7 @@ const chartData = {
                 <td className="px-6 py-4">{new Date(end_date).toLocaleDateString()}</td>
               </tr>
               <tr className="odd:bg-white even:bg-gray-50 border-b">
-                <td className="px-6 py-4">Evaluate</td>
+                <td className="px-6 py-4">Evaluated by</td>
                 <td className="px-6 py-4">{studentCount || 0} Students</td>
               </tr>
             </tbody>
@@ -210,4 +210,4 @@ const chartData = {
   );
 };
 
-export default ViewResults;
+export default ViewResults; 
