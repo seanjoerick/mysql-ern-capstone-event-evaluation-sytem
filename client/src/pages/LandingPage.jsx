@@ -1,95 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../components/LandingPageHeader';
-import Footer from '../components/Footer'; 
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faHeadset, faBolt, faLock, faClipboardCheck, faPencilRuler, faLightbulb } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import section from '../assets/images/section.jpg';
+import { faCheckCircle, faClipboardList, faBell, faChartLine, faUserShield, faUsersCog } from '@fortawesome/free-solid-svg-icons';
+import Header from '../components/LandingPageHeader';
+import Footer from '../components/Footer';
 
-const LandingPage = () => {
-  const [animate, setAnimate] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimate(true);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
+const LandingPage = ({ content }) => {
+  // Feature items with corresponding icons
+  const features = [
+    { title: "Event Creation", description: "Admins and organizers can effortlessly create and manage events, ensuring a smooth process for all participants.", icon: faClipboardList },
+    { title: "Student Notifications", description: "Automated reminders are sent to students for upcoming evaluations and events.", icon: faBell },
+    { title: "Criteria Management", description: "Admins can define and manage evaluation criteria to ensure comprehensive feedback.", icon: faCheckCircle },
+    { title: "Student Evaluations", description: "Students can submit their evaluations easily and provide valuable feedback on events.", icon: faUsersCog },
+    { title: "Dashboard Insights", description: "Admins and organizers have access to a dashboard showcasing event insights and evaluation summaries.", icon: faChartLine },
+    { title: "User Authentication", description: "Secure login and signup processes ensure that both students and admins can access the system safely.", icon: faUserShield }
+  ];
 
   return (
-    <div className="landing-page">
-      <Header />
-      <div className="font-sans">
-        <div className="relative lg:grid lg:grid-cols-2 lg:gap-y-6 bg-gray-300 p-8 rounded-lg shadow-md">
-          
-        <div className="max-lg:order-1 max-lg:text-center flex flex-col items-center justify-center h-full">
-            <p className="text-gray-800 text-md mb-4 text-center">
-              Welcome to the Event Evaluation System, where you can provide feedback on events and help us improve future experiences.
-            </p>
-            {/* Centered buttons */}
-            <div className="flex gap-4 mt-4 justify-center">
-              <Link to="/login" className="bg-gray-800 text-white font-bold text-sm rounded-md px-6 py-2 transition-all hover:bg-gray-600 shadow">
-                Login
-              </Link>
-              <Link to="/signup" className="bg-transparent border-2 border-gray-800 text-gray-800 font-bold text-sm rounded-md px-6 py-2 transition-all hover:bg-gray-600 hover:text-white shadow">
-                Sign Up
-              </Link>
-            </div>
-          </div>
+    <div className="max-w-[1920px] mx-auto">
+      <div className="bg-white text-gray-800 text-[15px]">
+        <div className="relative lg:min-h-screen 2xl:min-h-[730px] bg-gray-100">
+          <Header />
 
-          <div className="lg:h-[480px] flex items-center justify-center relative">
-            <img src={section} className="w-full h-full object-cover rounded-md shadow-md" alt="Dining Experience" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-300 bg-opacity-70 p-6 rounded-md shadow-lg">
-              <h2 className={`text-2xl font-bold mb-4 text-gray-800 ${animate ? 'animate-slide' : ''}`}>
-                Event Evaluation System
-              </h2>
-              <div className="flex items-center mb-2">
-                <FontAwesomeIcon icon={faClipboardCheck} className="text-gray-600 mr-2" />
-                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
-                  Students can evaluate past events to provide valuable feedback.
-                </p>
-              </div>
-              <div className="flex items-center mb-2">
-                <FontAwesomeIcon icon={faPencilRuler} className="text-gray-600 mr-2" />
-                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
-                  Organizers can create tailored evaluations for each event.
-                </p>
-              </div>
-              <div className="flex items-center mb-2">
-                <FontAwesomeIcon icon={faLightbulb} className="text-gray-600 mr-2" />
-                <p className={`text-lg text-gray-800 ${animate ? 'animate-slide' : ''}`}>
-                  Experience an intuitive design for effortless feedback submission.
-                </p>
-              </div>
-            </div>
+          <div className="max-w-5xl mx-auto text-center relative px-4 sm:px-10 mt-16">
+            {/* Main content area for dynamic content */}
+            {content}
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 px-4 my-12">
-          <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faCogs} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Event Evaluation</h3>
-            <p className="text-sm text-gray-600">Students can evaluate past events to provide valuable feedback.</p>
+        <div className="px-4 sm:px-10">
+          <div className="mt-32 max-w-7xl mx-auto">
+            <div className="mb-16 max-w-2xl text-center mx-auto">
+              <h2 className="md:text-4xl text-3xl font-semibold md:!leading-[50px] mb-6 text-gray-900">Our Features</h2>
+              <p className="text-gray-600">Discover the capabilities of our Event Evaluation System, designed to streamline event management and evaluation.</p>
+            </div>
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-12 mt-16">
+              {features.map((feature, index) => (
+                <div className="text-center bg-gray-100 px-6 py-8 rounded-2xl" key={index}>
+                  <FontAwesomeIcon icon={feature.icon} className={`w-12 mb-6 inline-block ${index % 2 === 0 ? 'text-blue-600' : 'text-red-600'} bg-gray-200 p-3 rounded-xl`} />
+                  <h3 className="text-xl mb-4 text-gray-900">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faHeadset} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Organizer Dashboard</h3>
-            <p className="text-sm text-gray-600">Organizers can create tailored evaluations for each event.</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faBolt} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">User-Friendly Interface</h3>
-            <p className="text-sm text-gray-600">Experience an intuitive design for effortless feedback submission.</p>
-          </div>
-          <div className="bg-gray-100 p-6 rounded-md">
-            <FontAwesomeIcon icon={faLock} className="w-10 h-10 mb-4 inline-block bg-white p-2 rounded-md text-gray-500" />
-            <h3 className="text-lg font-bold mb-2 text-gray-800">Security</h3>
-            <p className="text-sm text-gray-600">We prioritize your security and privacy.</p>
-          </div>
+
+          <Footer />
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

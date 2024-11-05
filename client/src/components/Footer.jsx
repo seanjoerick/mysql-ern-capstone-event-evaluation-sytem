@@ -1,37 +1,43 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faLinkedin, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-12 px-4 font-sans tracking-wide">
-      <div className="text-center">
-        <h6 className="text-base">Stay connected with us:</h6>
-
-        <ul className="flex flex-wrap justify-center gap-x-8 gap-4 my-8">
-          <li>
-            <a href="javascript:void(0)" className="text-xl hover:text-gray-400">
-              <FontAwesomeIcon icon={faFacebook} />
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" className="text-xl hover:text-gray-400">
-              <FontAwesomeIcon icon={faLinkedin} />
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" className="text-xl hover:text-gray-400">
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" className="text-xl hover:text-gray-400">
-              <FontAwesomeIcon icon={faTwitter} />
-            </a>
-          </li>
-        </ul>
-
-        <p className="text-base">© ReadymadeUI. All rights reserved.</p>
+    <footer className="bg-[#111] px-4 sm:px-10 py-12 mt-32">
+      <div className="grid max-sm:grid-cols-1 max-lg:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <h4 className="text-lg mb-6">About Us</h4>
+          <p className="text-gray-400 mb-2">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean gravida,
+            mi eu pulvinar cursus, sem elit interdum mauris.
+          </p>
+        </div>
+        <div>
+          <h4 className="text-lg mb-6">Services</h4>
+          <ul className="space-y-4">
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Web Development</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Mobile App Development</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">UI/UX Design</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Digital Marketing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-lg mb-6">Resources</h4>
+          <ul className="space-y-4">
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Webinars</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Ebooks</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Templates</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Tutorials</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-lg mb-6">About Us</h4>
+          <ul className="space-y-4">
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Our Story</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Mission and Values</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Team</a></li>
+            <li><a href="#" className="text-gray-400 hover:text-blue-600 transition-all">Testimonials</a></li>
+          </ul>
+        </div>
       </div>
     </footer>
   );

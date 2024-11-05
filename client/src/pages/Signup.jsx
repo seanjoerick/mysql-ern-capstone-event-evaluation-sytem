@@ -261,14 +261,14 @@ const SignUp = () => {
             </div>
           </form>
           {/* Back to Site Button */}
-          {/* <div className="text-center mb-4">
+          <div className="text-center mb-4">
             <button
               onClick={handleBackToSite}
               className="text-blue-500 hover:underline mb-4"
             >
               Back to Site
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
