@@ -255,21 +255,24 @@
 
 
 
-
-
-
-<h2 className="text-xl font-bold text-center mb-4">Terms and Conditions</h2>
-<p className="mb-4 text-center">
-  Welcome to the Event Evaluation System of Trimex Colleges. By signing up, you agree to the following terms and conditions:
-</p>
-<ul className="mb-4 list-disc list-inside text-left">
-  <li>All data provided must be accurate and up-to-date.</li>
-  <li>Your participation in the event evaluation is voluntary.</li>
-  <li>Trimex Colleges respects your privacy and is committed to complying with Philippine data protection laws.</li>
-  <li>The information collected will only be used for evaluation purposes and will not be shared with third parties without your consent.</li>
-  <li>Any misconduct or inappropriate behavior during the evaluation process may result in consequences as per school policies.</li>
-  <li>By using this system, you acknowledge that you have read and understood these terms and conditions.</li>
-</ul>
-<p className="mb-4 text-center">
-  Trimex Colleges is committed to adhering to Philippine laws and regulations regarding data privacy and protection, including the Data Privacy Act of 2012 (Republic Act No. 10173).
-</p>
+<div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+<div style="max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <div style="text-align: center;">
+        <img src="https://trimexcolleges.edu.ph/public/images/logo/trimex.png" alt="Trimex College Logo" style="max-width: 150px; margin-bottom: 20px;">
+    </div>
+    <h2 style="color: #333; text-align: center;">Event Reminder</h2>
+    <p style="color: #555;">Hello students,</p>
+    <p style="color: #555;">This is a reminder for the upcoming event:</p>
+    <h3 style="color: #007bff;">${eventTitle}</h3>
+    <p style="color: #555;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/planner.png" alt="Calendar Icon" style="width: 20px; vertical-align: middle; margin-right: 5px;">
+        <strong>Date:</strong> ${formattedStartDate}
+    </p>
+    <p style="color: #555;">We look forward to your participation!</p>
+    <p style="color: #555;">Thank you!<br><strong>Event Organizer</strong></p>
+    <hr style="border-top: 1px solid #eee;">
+    <footer style="color: #aaa; text-align: center;">
+        <p>If you have any questions, feel free to reply to this email.</p>
+    </footer>
+</div>
+</div>

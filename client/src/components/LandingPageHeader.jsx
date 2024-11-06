@@ -1,17 +1,18 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom'; // Change Link to NavLink
+import { NavLink } from 'react-router-dom';
 import Logo from '../assets/images/trimex.png';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
     <header className="py-4 px-4 sm:px-10 z-50 min-h-[70px] relative">
       <div className="lg:flex lg:items-center gap-x-2 relative">
         <div className="flex items-center shrink-0">
-          <a href="#!">
-            <img src={Logo} alt="logo" className="w-40" />
-          </a>
+        <Link to="/">
+          <img src={Logo} alt="logo" className="w-40" />
+        </Link>
           <button id="toggleOpen" className="lg:hidden ml-auto">
             <FontAwesomeIcon icon={faBars} className="w-7 h-7 text-white" />
           </button>

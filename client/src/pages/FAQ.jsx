@@ -26,22 +26,23 @@ const FAQ = () => {
 
   const studentFAQs = [
     {
-      question: "How to register for events?",
-      answer: "To register for events, log into your student account and navigate to the 'Events' page. Select the event you want to register for and follow the prompts."
-    },
-    {
       question: "How do I submit my evaluation?",
-      answer: "After an event, you will receive a notification with a link to submit your evaluation. Click the link and fill out the evaluation form."
+      answer: "After attending an event, you will receive a notification with a link to submit your evaluation. Click the link and complete the evaluation form."
     },
     {
       question: "Can I edit my evaluation after submission?",
-      answer: "No, once your evaluation has been submitted, it cannot be edited. Please ensure that all information is correct before submitting."
+      answer: "No, once your evaluation has been submitted, it cannot be edited. Please ensure all information is correct before submitting."
     },
     {
       question: "What should I do if I encounter technical issues?",
-      answer: "If you encounter technical issues, please reach out to support through the contact form or the help section."
+      answer: "If you experience technical issues, please reach out to support through the contact form or the help section."
     },
+    {
+      question: "Can I provide additional feedback on events?",
+      answer: "Yes, you can include additional comments in the feedback section of your evaluation to share more insights about the event."
+    }
   ];
+  
 
   return (
     <div className="container mx-auto px-4 py-8">

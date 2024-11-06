@@ -105,10 +105,15 @@ const PDFContent = ({ event, overallAverageScore, ratingDescription, studentCoun
 
   return (
     <button
-      className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg p-2"
+      className={`font-medium rounded-lg p-2 text-white ${
+        criteriaData.length === 0
+          ? 'bg-gray-400 cursor-not-allowed'
+          : 'bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300'
+      }`}
       onClick={generatePDF}
+      disabled={criteriaData.length === 0}
     >
-       <FontAwesomeIcon icon={faFilePdf} />
+      <FontAwesomeIcon icon={faFilePdf} />
     </button>
   );
 };
