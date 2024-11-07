@@ -56,6 +56,7 @@ const Login = () => {
                     className="grow"
                     placeholder="Email Address"
                     required
+                    autoComplete="off"
                   />
                 </label>
               </div>

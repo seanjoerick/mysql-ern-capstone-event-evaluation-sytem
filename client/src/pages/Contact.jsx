@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 import toast from 'react-hot-toast';
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -58,12 +57,12 @@ const Contact = () => {
 
   return (
     <div className="max-w-md mx-auto">
-      <h2 className="text-3xl font-semibold mb-6">Contact Us</h2>
-      <p className="text-base text-gray-600">Trimex Colleges</p>
-      <p className="text-base text-gray-600">
+      <h2 className="text-black text-3xl font-semibold mb-6">Contact Us</h2>
+      <p className="text-base text-black">Trimex Colleges</p>
+      <p className="text-base text-black">
         <strong>Director of Instruction</strong>
       </p>
-      <p className="text-base text-gray-600">
+      <p className="text-base text-black">
         <strong>Email address:</strong> eventAdmin@gmail.com
       </p>
 
@@ -76,8 +75,9 @@ const Contact = () => {
             placeholder="Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
             required
+            autoComplete="off"
           />
         </div>
 
@@ -89,8 +89,9 @@ const Contact = () => {
             placeholder="Email address"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
             required
+            autoComplete="off"
           />
         </div>
 
@@ -101,9 +102,10 @@ const Contact = () => {
             placeholder="Write your message here"
             value={formData.message}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
             rows="5"
             required
+            autoComplete="off"
           />
         </div>
 
@@ -117,7 +119,9 @@ const Contact = () => {
             'Send Email'
           )}
         </button>
+        
       </form>
+      
     </div>
   );
 };

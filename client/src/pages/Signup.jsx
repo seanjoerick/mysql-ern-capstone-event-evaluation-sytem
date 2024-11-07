@@ -202,6 +202,7 @@ const SignUp = () => {
                       placeholder="Username"
                       required
                       onChange={handleInputChange}
+                      autoComplete="off"
                     />
                   </label>
                 </div>

@@ -46,11 +46,11 @@ const FAQ = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h3 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h3>
+      <h3 className="text-black text-2xl font-semibold mb-4">Frequently Asked Questions</h3>
       <div className="grid md:grid-cols-2 gap-8">
         {/* Organizer FAQs */}
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold mb-4">Organizer/Administrator</h2>
+          <h2 className="text-black text-xl font-semibold mb-4">Organizer/Administrator</h2>
           {organizerFAQs.map((faq, index) => (
             <div key={index}>
               <button
@@ -68,7 +68,7 @@ const FAQ = () => {
 
         {/* Student FAQs */}
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold mb-4">Student</h2>
+          <h2 className="text-black text-xl font-semibold mb-4">Student</h2>
           {studentFAQs.map((faq, index) => (
             <div key={index}>
               <button

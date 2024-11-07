@@ -35,22 +35,22 @@ const App = () => {
               : <LandingPage 
                   content={
                     <div>
-                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 leading-[80px] text-gray-900">
+                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 leading-[80px] text-black">
                         Event Evaluation System
                       </h2>
-                      <p className="text-base text-gray-600">
+                      <p className="text-base text-black">
                         The Event Evaluation System is managed by organizers, while students are responsible for submitting evaluations.
                       </p>
                       <InfoSection />
                       {/* Centering the buttons */}
                       <div className="mt-14 flex justify-center gap-4"> 
                         <Link to="/login">
-                          <button type="button" className="px-6 py-3.5 rounded-md text-white bg-gray-900 hover:bg-gray-500 transition-all">
+                          <button type="button" className="px-6 py-3.5 rounded-md text-white bg-black hover:bg-gray-900 transition-all">
                             Login
                           </button>
                         </Link>
                         <Link to="/signup">
-                          <button type="button" className="bg-transparent hover:bg-gray-900 border border-gray-600 px-6 py-3.5 rounded-md text-gray-600 hover:text-white transition-all">
+                          <button type="button" className="bg-transparent hover:bg-black border border-gray-900 px-6 py-3.5 rounded-md text-black hover:text-white transition-all">
                             Sign Up
                           </button>
                         </Link>
