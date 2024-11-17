@@ -29,4 +29,4 @@ Nodemailer for email notifications
 WebSocket for real-time communication
 MVC architecture for clean, maintainable code
 Demo
-🎥 Watch the demo: https://youtu.be/SelO_Qmc85E
+🎥 Watch the youtube demo: https://youtu.be/SelO_Qmc85E
