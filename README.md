@@ -29,4 +29,4 @@ Nodemailer for email notifications
 WebSocket for real-time communication
 MVC architecture for clean, maintainable code
 Demo
-🎥 Watch the demo: Capstone Event Evaluation System Demo
+🎥 Watch the demo: https://youtu.be/SelO_Qmc85E
