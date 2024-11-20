@@ -63,7 +63,7 @@ const Contact = () => {
         <strong>Director of Instruction</strong>
       </p>
       <p className="text-base text-black">
-        <strong>Email address:</strong> eventAdmin@gmail.com
+        <strong>Email address:</strong> trimexadmin@gmail.com
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6">

@@ -164,6 +164,7 @@ const SignUp = () => {
                       className="input grow w-full"
                       placeholder="First Name"
                       required
+                      autoComplete="off"
                       onChange={handleInputChange}
                     />
                   </label>
@@ -181,6 +182,7 @@ const SignUp = () => {
                       className="input grow w-full"
                       placeholder="Last Name"
                       required
+                      autoComplete="off"
                       onChange={handleInputChange}
                     />
                   </label>

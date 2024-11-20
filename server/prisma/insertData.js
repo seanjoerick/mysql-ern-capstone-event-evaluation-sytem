@@ -102,4 +102,4 @@ run().catch((error) => {
 });
 
 //run
-//node server/prisma/insertData.js root folder
+// node server/prisma/insertData.js root folder
