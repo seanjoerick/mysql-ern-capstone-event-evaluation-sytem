@@ -15,34 +15,32 @@ cron.schedule('* * * * *', async () => {
         const events = await prisma.event.findMany({
             where: {
                 OR: [
-                    { status: 'active' },  // Check for active events
-                    { status: 'ongoing' }  // Check for ongoing events
+                    { status: 'active' },  
+                    { status: 'ongoing' }  
                 ]
             }
         });
 
         // Loop through each event to check its status and update if necessary
         for (const event of events) {
-            const startDate = new Date(event.start_date); // Convert start_date to Date object
-            const endDate = new Date(event.end_date);     // Convert end_date to Date object
+            const startDate = new Date(event.start_date); 
+            const endDate = new Date(event.end_date); 
 
             // Check if the event is active and the current time is between start and end dates
             if (event.status === 'active' && currentTime >= startDate && currentTime < endDate) {
-                // Update the event status to 'ongoing'
                 await prisma.event.update({
-                    where: { event_id: event.event_id }, // Find event by its ID
-                    data: { status: 'ongoing' }           // Set status to ongoing
+                    where: { event_id: event.event_id }, 
+                    data: { status: 'ongoing' }        
                 });
-                console.log(`Event ${event.event_title} is now ongoing`); // Log the status update
+                console.log(`Event ${event.event_title} is now ongoing`); 
             } 
             // Check if the event is ongoing and the current time has passed the end date
             else if (event.status === 'ongoing' && currentTime >= endDate) {
-                // Update the event status to 'completed'
                 await prisma.event.update({
-                    where: { event_id: event.event_id }, // Find event by its ID
-                    data: { status: 'completed' }         // Set status to completed
+                    where: { event_id: event.event_id }, 
+                    data: { status: 'completed' }      
                 });
-                console.log(`Event ${event.event_title} is now completed`); // Log the status update
+                console.log(`Event ${event.event_title} is now completed`); 
             }
         }
     } catch (error) {
@@ -50,5 +48,5 @@ cron.schedule('* * * * *', async () => {
         console.error('Error updating event statuses:', error);
     }
 }, {
-    timezone: singaporeTimeZone // Set the timezone for the cron job
+    timezone: singaporeTimeZone 
 });
